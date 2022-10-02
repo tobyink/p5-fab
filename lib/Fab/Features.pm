@@ -4,68 +4,39 @@ use warnings;
 
 package Fab::Features;
 
+use Import::Into;
 use experimental 'signatures';
-
-sub _prelude ( $target ) {
-	my ($package, $file, $line, $level)
-		= ref $target         ? @{$target}{qw(package filename line level)}
-		: $target =~ /[^0-9]/ ? ($target)
-		: (undef, undef, undef, $target);
-	if (defined $level) {
-		my ($p, $fn, $ln) = caller($level + 2);
-		$package ||= $p;
-		$file    ||= $fn;
-		$line    ||= $ln;
-	}
-	qq{package $package;\n}
-		. ( $file ? "#line $line \"$file\"\n" : '' )
-}
-
-sub _make_action ( $action, $target ) {
-	my $version = ref $target && $target->{version};
-	eval _prelude($target)
-		. q[sub {]
-		. q[  my $module = shift;]
-		. q[  eval "require $module";]
-		. (ref $target && exists $target->{version} ? q[  $module->VERSION($version);] : q[])
-		. q[  $module->].$action.q[(@_);]
-		. q[}]
-		or die "Failed to build action sub to ${action} for ${target}: $@";
-}
 
 sub import {
 	require experimental;
 	require feature;
 
-	my $import   = _make_action( import   => 1 );
-	my $unimport = _make_action( unimport => 1 );
-
 	# use strict
-	'strict'->$import();
+	'strict'->import::into( 1 );
 
 	# use warnings
-	'warnings'->$import();
+	'warnings'->import::into( 1 );
 
 	# use feature 'state';
-	'feature'->$import( 'state' );
+	'feature'->import::into( 1, 'state' );
 
 	# use feature 'try';
 	if ( $] ge '5.034001' ) {
-		'feature'->$import( 'try' );
-		'warnings'->$unimport( 'experimental::try' );
+		'feature'->import::into( 1, 'try' );
+		'warnings'->unimport::out_of( 1, 'experimental::try' );
 	}
 	else {
 		require Syntax::Keyword::Try;
-		'Syntax::Keyword::Try'->$import();
+		'Syntax::Keyword::Try'->import::into( 1 );
 	}
 
 	# use feature 'signatures';
-	'feature'->$import( 'signatures' );
-	'warnings'->$unimport( 'experimental::signatures' );
+	'feature'->import::into( 1, 'signatures' );
+	'warnings'->unimport::out_of( 1, 'experimental::signatures' );
 
 	# use Path::Tiny qw( path );
 	require Path::Tiny;
-	'Path::Tiny'->$import( 'path' );
+	'Path::Tiny'->import::into( 1, 'path' );
 }
 
 1;

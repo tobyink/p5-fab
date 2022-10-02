@@ -7,6 +7,7 @@
 	:runtime-requirement    [ :on "Exporter::Tiny"^^:CpanId ];
 	:runtime-requirement    [ :on "Path::Tiny"^^:CpanId ];
 	:runtime-requirement    [ :on "Text::Glob"^^:CpanId ];
+	:runtime-requirement    [ :on "Import::Into"^^:CpanId ];
 	:test-requirement       [ :on "Test::More 0.96"^^:CpanId ];
 	:develop-recommendation [ :on "Dist::Inkt 0.001"^^:CpanId ];
 	:develop-requirement    [ :on "Mite"^^:CpanId ];

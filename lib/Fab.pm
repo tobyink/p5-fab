@@ -9,11 +9,11 @@ our $VERSION   = '0.001';
 
 use Fab::Features;
 use Fab::DSL ();
+use Import::Into;
 
 sub import ( $class ) {
-	my $import = Fab::Features::_make_action( import => 1 );
-	'Fab::Features'->$import();
-	'Fab::DSL'->$import();
+	'Fab::Features'->import::into( 1 );
+	'Fab::DSL'->import::into( 1 );
 }
 
 1;
