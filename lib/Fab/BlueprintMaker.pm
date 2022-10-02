@@ -90,7 +90,7 @@ sub stash ( $self ) {
 }
 
 sub go ( $self ) {
-	return if our $NO_GO;
+	return if $Fab::NO_GO;
 	my $blueprint = $self->blueprint;
 	$blueprint->finalize();
 	require Fab::Context;

@@ -15,16 +15,18 @@ our @EXPORT = qw(
 	go
 );
 
-sub definition_context {
+sub definition_context ( $level = 1 ) {
 	my %context;
-	@context{qw( package file line )} = caller( 1 );
+	@context{qw( package file line )} = caller( $level );
 	\%context;
 }
 
 sub _exporter_validate_opts ( $class, $globals ) {
 	require Fab::BlueprintMaker;
 	$globals->{maker_class} = 'Fab::BlueprintMaker';
-	our $MAKER = ( $globals->{maker} ||= $globals->{maker_class}->new( definition_context => definition_context() ) );
+	$Fab::MAKER = ( $globals->{maker} ||= $globals->{maker_class}->new(
+		definition_context => definition_context(5),
+	) );
 }
 
 sub _generate_product ( $class, $name, $args, $globals ) {

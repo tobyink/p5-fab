@@ -1,0 +1,7 @@
+#!perl
+
+use Fab::Features;
+use Fab::App;
+
+my $app = 'Fab::App'->new_from_argv( @ARGV );
+exit( $app->run );

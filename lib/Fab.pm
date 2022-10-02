@@ -11,9 +11,27 @@ use Fab::Features;
 use Fab::DSL ();
 use Import::Into;
 
-sub import ( $class ) {
+our $NO_CHDIR;
+
+@INC = map {
+	if (ref $_) {
+		$_;
+	}
+	else {
+		my $dir = path($_)->absolute;
+		$dir->canonpath, $_ eq '.' ? '.' : ();
+	}
+} @INC;
+
+sub import ( $class, %opts ) {
 	'Fab::Features'->import::into( 1 );
 	'Fab::DSL'->import::into( 1 );
+	
+	my ( undef, $file ) = caller( 0 );
+	if ( $file and !$opts{no_chdir} and !$NO_CHDIR ) {
+		my $path = path( $file )->absolute->parent->canonpath;
+		chdir( "$path" );
+	}
 }
 
 1;

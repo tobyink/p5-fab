@@ -74,21 +74,21 @@ sub new {
     my $no_build = delete $args->{__no_BUILD__};
 
     # Attribute task
-    # param declaration, file lib/Fab/Exception/PrerequisiteFailed.pm, line 10
+    # param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Exception/PrerequisiteFailed.pm, line 10
     croak "Missing key in constructor: task" unless exists $args->{"task"}; 
     $self->{"task"} = $args->{"task"}; 
 
     # Attribute prerequisite
-    # param declaration, file lib/Fab/Exception/PrerequisiteFailed.pm, line 15
+    # param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Exception/PrerequisiteFailed.pm, line 15
     croak "Missing key in constructor: prerequisite" unless exists $args->{"prerequisite"}; 
     $self->{"prerequisite"} = $args->{"prerequisite"}; 
 
     # Attribute message (type: Str)
-    # param declaration, file lib/Fab/Exception.pm, line 6
+    # param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Exception.pm, line 6
     if ( exists $args->{"message"} ) { do { package Fab::Mite; defined($args->{"message"}) and do { ref(\$args->{"message"}) eq 'SCALAR' or ref(\(my $val = $args->{"message"})) eq 'SCALAR' } } or croak "Type check failed in constructor: %s should be %s", "message", "Str"; $self->{"message"} = $args->{"message"}; } ;
 
     # Attribute original_exception
-    # param declaration, file lib/Fab/Exception.pm, line 12
+    # param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Exception.pm, line 12
     if ( exists $args->{"original_exception"} ) { $self->{"original_exception"} = $args->{"original_exception"}; } ;
 
 
@@ -131,11 +131,11 @@ sub DESTROY {
 my $__XS = !$ENV{PERL_ONLY} && eval { require Class::XSAccessor; Class::XSAccessor->VERSION("1.19") };
 
 # Accessors for message
-# param declaration, file lib/Fab/Exception.pm, line 6
+# param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Exception.pm, line 6
 sub message { @_ == 1 or croak( 'Reader "message" usage: $self->message()' ); ( exists($_[0]{"message"}) ? $_[0]{"message"} : ( $_[0]{"message"} = do { my $default_value = $_[0]->_build_message; do { package Fab::Mite; defined($default_value) and do { ref(\$default_value) eq 'SCALAR' or ref(\(my $val = $default_value)) eq 'SCALAR' } } or croak( "Type check failed in default: %s should be %s", "message", "Str" ); $default_value } ) ) }
 
 # Accessors for original_exception
-# param declaration, file lib/Fab/Exception.pm, line 12
+# param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Exception.pm, line 12
 if ( $__XS ) {
     Class::XSAccessor->import(
         chained => 1,
@@ -149,7 +149,7 @@ else {
 }
 
 # Accessors for prerequisite
-# param declaration, file lib/Fab/Exception/PrerequisiteFailed.pm, line 15
+# param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Exception/PrerequisiteFailed.pm, line 15
 if ( $__XS ) {
     Class::XSAccessor->import(
         chained => 1,
@@ -161,7 +161,7 @@ else {
 }
 
 # Accessors for task
-# param declaration, file lib/Fab/Exception/PrerequisiteFailed.pm, line 10
+# param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Exception/PrerequisiteFailed.pm, line 10
 if ( $__XS ) {
     Class::XSAccessor->import(
         chained => 1,

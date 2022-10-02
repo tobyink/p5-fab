@@ -1,5 +1,5 @@
 {
-package Fab::Exception::StepFailed;
+package Fab::App;
 use strict;
 use warnings;
 no warnings qw( once void );
@@ -9,7 +9,7 @@ our $MITE_SHIM = "Fab::Mite";
 our $MITE_VERSION = "0.010008";
 # Mite keywords
 BEGIN {
-    my ( $SHIM, $CALLER ) = ( "Fab::Mite", "Fab::Exception::StepFailed" );
+    my ( $SHIM, $CALLER ) = ( "Fab::Mite", "Fab::App" );
     ( *after, *around, *before, *extends, *field, *has, *param, *signature_for, *with ) = do {
         package Fab::Mite;
         no warnings 'redefine';
@@ -73,30 +73,13 @@ sub new {
     my $args  = $meta->{HAS_BUILDARGS} ? $class->BUILDARGS( @_ ) : { ( @_ == 1 ) ? %{$_[0]} : @_ };
     my $no_build = delete $args->{__no_BUILD__};
 
-    # Attribute error
-    # param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Exception/StepFailed.pm, line 10
-    croak "Missing key in constructor: error" unless exists $args->{"error"}; 
-    $self->{"error"} = $args->{"error"}; 
-
-    # Attribute step
-    # param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Exception/StepFailed.pm, line 15
-    croak "Missing key in constructor: step" unless exists $args->{"step"}; 
-    $self->{"step"} = $args->{"step"}; 
-
-    # Attribute message (type: Str)
-    # param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Exception.pm, line 6
-    if ( exists $args->{"message"} ) { do { package Fab::Mite; defined($args->{"message"}) and do { ref(\$args->{"message"}) eq 'SCALAR' or ref(\(my $val = $args->{"message"})) eq 'SCALAR' } } or croak "Type check failed in constructor: %s should be %s", "message", "Str"; $self->{"message"} = $args->{"message"}; } ;
-
-    # Attribute original_exception
-    # param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Exception.pm, line 12
-    if ( exists $args->{"original_exception"} ) { $self->{"original_exception"} = $args->{"original_exception"}; } ;
 
 
     # Call BUILD methods
     $self->BUILDALL( $args ) if ( ! $no_build and @{ $meta->{BUILD} || [] } );
 
     # Unrecognized parameters
-    my @unknown = grep not( /\A(?:error|message|original_exception|step)\z/ ), keys %{$args}; @unknown and croak( "Unexpected keys in constructor: " . join( q[, ], sort @unknown ) );
+    my @unknown = grep not( do { package Fab::Mite; defined($_) and do { ref(\$_) eq 'SCALAR' or ref(\(my $val = $_)) eq 'SCALAR' } } ), keys %{$args}; @unknown and croak( "Unexpected keys in constructor: " . join( q[, ], sort @unknown ) );
 
     return $self;
 }
@@ -128,56 +111,6 @@ sub DESTROY {
     return;
 }
 
-my $__XS = !$ENV{PERL_ONLY} && eval { require Class::XSAccessor; Class::XSAccessor->VERSION("1.19") };
-
-# Accessors for error
-# param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Exception/StepFailed.pm, line 10
-if ( $__XS ) {
-    Class::XSAccessor->import(
-        chained => 1,
-        "getters" => { "error" => "error" },
-    );
-}
-else {
-    *error = sub { @_ == 1 or croak( 'Reader "error" usage: $self->error()' ); $_[0]{"error"} };
-}
-
-# Accessors for message
-# param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Exception.pm, line 6
-sub message { @_ == 1 or croak( 'Reader "message" usage: $self->message()' ); ( exists($_[0]{"message"}) ? $_[0]{"message"} : ( $_[0]{"message"} = do { my $default_value = $_[0]->_build_message; do { package Fab::Mite; defined($default_value) and do { ref(\$default_value) eq 'SCALAR' or ref(\(my $val = $default_value)) eq 'SCALAR' } } or croak( "Type check failed in default: %s should be %s", "message", "Str" ); $default_value } ) ) }
-
-# Accessors for original_exception
-# param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Exception.pm, line 12
-if ( $__XS ) {
-    Class::XSAccessor->import(
-        chained => 1,
-        "exists_predicates" => { "has_original_exception" => "original_exception" },
-        "getters" => { "original_exception" => "original_exception" },
-    );
-}
-else {
-    *has_original_exception = sub { @_ == 1 or croak( 'Predicate "has_original_exception" usage: $self->has_original_exception()' ); exists $_[0]{"original_exception"} };
-    *original_exception = sub { @_ == 1 or croak( 'Reader "original_exception" usage: $self->original_exception()' ); $_[0]{"original_exception"} };
-}
-
-# Accessors for step
-# param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Exception/StepFailed.pm, line 15
-if ( $__XS ) {
-    Class::XSAccessor->import(
-        chained => 1,
-        "getters" => { "step" => "step" },
-    );
-}
-else {
-    *step = sub { @_ == 1 or croak( 'Reader "step" usage: $self->step()' ); $_[0]{"step"} };
-}
-
-
-BEGIN {
-    require Fab::Exception;
-    
-    our %DOES = ( "Fab::Exception::StepFailed" => 1, "Fab::Exception" => 1 );
-}
 
 # See UNIVERSAL
 sub DOES {
@@ -195,12 +128,6 @@ sub DOES {
 sub does {
     shift->DOES( @_ );
 }
-
-# Methods from roles
-sub context_to_string { goto \&Fab::Exception::context_to_string; }
-sub rethrow { goto \&Fab::Exception::rethrow; }
-sub throw { goto \&Fab::Exception::throw; }
-sub to_string { goto \&Fab::Exception::to_string; }
 
 1;
 }
