@@ -3,7 +3,7 @@
 @prefix : <http://ontologi.es/doap-deps#>.
 
 `Fab`
-	:runtime-requirement    [ :on "perl 5.020"^^:CpanId ];
+	:runtime-requirement    [ :on "perl 5.028"^^:CpanId ];
 	:runtime-requirement    [ :on "Exporter::Tiny"^^:CpanId ];
 	:runtime-requirement    [ :on "Path::Tiny"^^:CpanId ];
 	:runtime-requirement    [ :on "Text::Glob"^^:CpanId ];

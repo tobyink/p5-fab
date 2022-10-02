@@ -1,4 +1,4 @@
-use 5.020;
+use 5.028;
 use strict;
 use warnings;
 
@@ -50,7 +50,7 @@ sub import {
 	'feature'->$import( 'state' );
 
 	# use feature 'try';
-	if ( $] gt '5.034001' ) {
+	if ( $] ge '5.034001' ) {
 		'feature'->$import( 'try' );
 		'warnings'->$unimport( 'experimental::try' );
 	}
