@@ -2,6 +2,7 @@ package Fab::DSL;
 
 use Fab::Features;
 use Hook::AfterRuntime qw( after_runtime );
+use File::Which qw( which );
 use parent 'Exporter::Tiny';
 
 our @EXPORT = qw(
@@ -14,6 +15,7 @@ our @EXPORT = qw(
 	this
 	stash
 	echo
+	which
 );
 
 sub definition_context ( $level = 1 ) {
