@@ -91,11 +91,4 @@ sub _generate_stash ( $class, $name, $args, $globals ) {
 	};
 }
 
-sub _generate_go ( $class, $name, $args, $globals ) {
-	my $maker = $globals->{maker};
-	return sub :prototype() {
-		return $maker->go();
-	};
-}
-
 1;
