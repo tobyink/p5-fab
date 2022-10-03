@@ -59,7 +59,6 @@ is(
 		call tasks        => bag {
 			item object {
 				prop isa          => 'Fab::Task';
-				prop isa          => 'Fab::Task::Simple';
 				call definition_context => hash { etc; };
 				call blueprint    => D();
 				call name         => string 'abc';
@@ -78,7 +77,6 @@ is(
 			};
 			item object {
 				prop isa          => 'Fab::Task';
-				prop isa          => 'Fab::Task::Simple';
 				call definition_context => hash { etc; };
 				call blueprint    => D();
 				call name         => string 'def';
@@ -97,7 +95,6 @@ is(
 			};
 			item object {
 				prop isa          => 'Fab::Task';
-				prop isa          => 'Fab::Task::Simple';
 				call definition_context => hash { etc; };
 				call blueprint    => D();
 				call name         => string 'xyz';

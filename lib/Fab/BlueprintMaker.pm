@@ -39,9 +39,9 @@ sub product ( $self, $name, %args ) {
 }
 
 sub task ( $self, $name, %args ) {
-	require Fab::Task::Simple;
+	require Fab::Task;
 	my $as = delete $args{as};
-	my $task = 'Fab::Task::Simple'->new(
+	my $task = 'Fab::Task'->new(
 		name      => $name,
 		blueprint => $self->blueprint,
 		%args,
