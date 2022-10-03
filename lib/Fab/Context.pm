@@ -5,6 +5,11 @@ use Fab::Features;
 
 use Term::ANSIColor qw( colored );
 
+param log_level => (
+	isa         => 'IntRange[0,5]',
+	default     => 0,
+);
+
 param blueprint => (
 	required    => true,
 	isa         => 'Object',
@@ -38,7 +43,7 @@ field stack => (
 );
 
 sub default_task_names ( $self ) {
-	return qw( .TOP );
+	return qw( :TOP );
 }
 
 sub fabricate ( $self, @task_names ) {
@@ -72,6 +77,7 @@ sub fabricate ( $self, @task_names ) {
 }
 
 sub log ( $self, $category, $message, @args ) {
+	
 	state $theme = {
 		error    => [ 'black on_bright_red' ],
 		warning  => [ 'bright_red' ],
@@ -79,6 +85,16 @@ sub log ( $self, $category, $message, @args ) {
 		debug    => [ 'yellow' ],
 		success  => [ 'bright_green' ],
 	};
+	state $importance = {
+		error    => 5,
+		warning  => 4,
+		info     => 3,
+		success  => 3,
+		debug    => 1,
+	};
+	
+	return if $importance->{$category} < $self->log_level;
+	
 	if ( @args ) {
 		$message = sprintf( $message, @args );
 	}
