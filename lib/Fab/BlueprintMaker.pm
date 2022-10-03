@@ -81,6 +81,15 @@ sub run ( $self, $cmd, @args ) {
 	return $self->_handle_step( run => $step );
 }
 
+sub echo ( $self, @args ) {
+	require Fab::Step::Echo;
+	my $step = 'Fab::Step::Echo'->new(
+		args     => \@args,
+		task     => $self->_current_task,
+	);
+	return $self->_handle_step( echo => $step );
+}
+
 sub set ( $self, $key, $value ) {
 	require Fab::Step::Set;
 	my $step = 'Fab::Step::Set'->new(

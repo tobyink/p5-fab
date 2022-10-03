@@ -6,7 +6,7 @@ use Fab::Features;
 extends 'Fab::Task';
 
 sub this ( $self ) {
-	return 'Fab::Path'->new( $self->name );
+	return path( $self->name );
 }
 
 1;

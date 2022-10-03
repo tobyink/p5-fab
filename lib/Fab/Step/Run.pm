@@ -45,7 +45,7 @@ sub execute ( $self, $context ) {
 	}
 	
 	if ( blessed $command and $command->isa( 'Path::Tiny' ) ) {
-		$command = $command->absolute->stringify;
+		$command = $command->stringify;
 	}
 	
 	# XXX: optionally capture STDOUT and STDERR
@@ -71,7 +71,7 @@ sub _process_arg ( $self, $arg, $context ) {
 		return $arg->resolve( $context->stash );
 	}
 	if ( blessed $arg and $arg->isa( 'Path::Tiny' ) and ref($self->command) ne 'CODE' ) {
-		return $arg->absolute->stringify;
+		return $arg->stringify;
 	}
 	return $arg;
 }

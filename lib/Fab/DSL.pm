@@ -13,6 +13,7 @@ our @EXPORT = qw(
 	set
 	this
 	stash
+	echo
 );
 
 sub definition_context ( $level = 1 ) {
@@ -72,6 +73,15 @@ sub _generate_set ( $class, $name, $args, $globals ) {
 	my $maker = $globals->{maker};
 	return sub ( $key, $val ) {
 		my $step = $maker->set( $key, $val );
+		$step->definition_context( definition_context() );
+		return;
+	};
+}
+
+sub _generate_echo ( $class, $name, $args, $globals ) {
+	my $maker = $globals->{maker};
+	return sub ( @args ) {
+		my $step = $maker->echo( @args );
 		$step->definition_context( definition_context() );
 		return;
 	};

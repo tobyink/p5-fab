@@ -54,7 +54,7 @@ field stack => (
 );
 
 sub default_task_names ( $self ) {
-	return qw( :TOP );
+	@ARGV ? @ARGV : qw( :TOP );
 }
 
 sub fabricate ( $self, @task_names ) {
@@ -93,10 +93,10 @@ sub fabricate ( $self, @task_names ) {
 sub log ( $self, $category, $message, @args ) {
 	
 	state $theme = {
-		error    => [ 'black on_bright_red' ],
-		warning  => [ 'bright_red' ],
+		error    => [ 'bright_red' ],
+		warning  => [ 'red' ],
 		info     => [ 'bright_cyan' ],
-		debug    => [ 'yellow' ],
+		debug    => [ 'cyan' ],
 		success  => [ 'bright_green' ],
 	};
 	state $importance = {
