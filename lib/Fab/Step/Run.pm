@@ -30,6 +30,8 @@ sub execute ( $self, $context ) {
 	
 	if ( ref($command) eq 'CODE' ) {
 		try {
+			local $Fab::CONTEXT = $context;
+			local $Fab::STEP    = $self;
 			$command->( @args );
 		}
 		catch ( $e ) {

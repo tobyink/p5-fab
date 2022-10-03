@@ -20,6 +20,17 @@ field stash => (
 	default     => {},
 );
 
+field settings => (
+	isa         => 'HashRef',
+	default     => {},
+	handles_via => 'Hash',
+	handles     => {
+		set_setting => 'set',
+		get_setting => 'get',
+	},
+	local_writer=> 'fresh_settings',
+);
+
 field _already_fabricated => (
 	isa         => 'HashRef',
 	default     => {},
@@ -56,7 +67,10 @@ sub fabricate ( $self, @task_names ) {
 		for my $task_name ( @task_names ) {
 			my @tasks = $self->blueprint->find_tasks( $task_name );
 			for my $task ( @tasks ) {
-				my $guard = $self->blueprint->_set_context( $self );
+				my @guards = (
+					$self->blueprint->_set_context( $self ),
+					$self->fresh_settings( {} ),
+				);
 				$self->_push_stack( $task );
 				$task->fabricate( $self );
 				$self->_pop_stack;

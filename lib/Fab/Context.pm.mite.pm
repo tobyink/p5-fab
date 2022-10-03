@@ -122,11 +122,11 @@ sub DESTROY {
 my $__XS = !$ENV{PERL_ONLY} && eval { require Class::XSAccessor; Class::XSAccessor->VERSION("1.19") };
 
 # Accessors for _already_fabricated
-# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Context.pm, line 23
+# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Context.pm, line 34
 sub _already_fabricated { @_ == 1 or croak( 'Reader "_already_fabricated" usage: $self->_already_fabricated()' ); ( exists($_[0]{"_already_fabricated"}) ? $_[0]{"_already_fabricated"} : ( $_[0]{"_already_fabricated"} = do { my $default_value = {}; (ref($default_value) eq 'HASH') or croak( "Type check failed in default: %s should be %s", "_already_fabricated", "HashRef" ); $default_value } ) ) }
 
 # Delegated methods for _already_fabricated
-# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Context.pm, line 23
+# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Context.pm, line 34
 *get_already_fabricated = sub {
 @_ >= 2 or croak("Wrong number of parameters in signature for get_already_fabricated; usage: "."\$instance->get_already_fabricated(\$key)");
 my $shv_self=shift;
@@ -163,12 +163,44 @@ else {
     *log_level = sub { @_ == 1 or croak( 'Reader "log_level" usage: $self->log_level()' ); $_[0]{"log_level"} };
 }
 
+# Accessors for settings
+# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Context.pm, line 23
+sub fresh_settings { 
+    defined wantarray or croak( "This method cannot be called in void context" );
+    my $get = "settings";
+    my $set = sub { (ref($_[1]) eq 'HASH') or croak( "Type check failed in %s: value should be %s", "local writer", "HashRef" ); $_[0]{"settings"} = $_[1]; $_[0]; };
+    my $has = sub { exists $_[0]{"settings"} };
+    my $clear = sub { delete $_[0]{"settings"}; $_[0]; };
+    my $old = undef;
+    my ( $self, $new ) = @_;
+    my $restorer = $self->$has
+        ? do { $old = $self->$get; sub { $self->$set( $old ) } }
+        : sub { $self->$clear };
+    @_ == 2 ? $self->$set( $new ) : $self->$clear;
+    &guard( $restorer, $old );
+ }
+sub settings { @_ == 1 or croak( 'Reader "settings" usage: $self->settings()' ); ( exists($_[0]{"settings"}) ? $_[0]{"settings"} : ( $_[0]{"settings"} = do { my $default_value = {}; (ref($default_value) eq 'HASH') or croak( "Type check failed in default: %s should be %s", "settings", "HashRef" ); $default_value } ) ) }
+
+# Delegated methods for settings
+# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Context.pm, line 23
+*get_setting = sub {
+@_ >= 2 or croak("Wrong number of parameters in signature for get_setting; usage: "."\$instance->get_setting(\$key)");
+my $shv_self=shift;
+my $shv_ref_invocant = do { $shv_self->settings };
+scalar(@_)>1 ? @{$shv_ref_invocant}{@_} : ($shv_ref_invocant)->{$_[0]}
+};
+*set_setting = sub {
+@_ >= 3 or croak("Wrong number of parameters in signature for set_setting; usage: "."\$instance->set_setting(\$key, \$value, ...)");
+my $shv_self=shift;
+my $shv_ref_invocant = do { $shv_self->settings };
+my (@shv_params) = @_; scalar(@shv_params) % 2 and do { require Carp; Carp::croak("Wrong number of parameters; expected even-sized list of keys and values") };my (@shv_keys_idx) = grep(!($_ % 2), 0..$#shv_params); my (@shv_values_idx) = grep(($_ % 2), 0..$#shv_params); grep(!defined, @shv_params[@shv_keys_idx]) and do { require Carp; Carp::croak("Undef did not pass type constraint; keys must be defined") };for my $shv_tmp (@shv_keys_idx) { do { do { package Fab::Mite; defined($shv_params[$shv_tmp]) and do { ref(\$shv_params[$shv_tmp]) eq 'SCALAR' or ref(\(my $val = $shv_params[$shv_tmp])) eq 'SCALAR' } } or croak("Type check failed in delegated method: expected %s, got value %s", "Str", $shv_params[$shv_tmp]); $shv_params[$shv_tmp] }; };; @{$shv_ref_invocant}{@shv_params[@shv_keys_idx]} = @shv_params[@shv_values_idx];wantarray ? @{$shv_ref_invocant}{@shv_params[@shv_keys_idx]} : ($shv_ref_invocant)->{$shv_params[$shv_keys_idx[0]]}
+};
 # Accessors for stack
-# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Context.pm, line 33
+# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Context.pm, line 44
 sub stack { @_ == 1 or croak( 'Reader "stack" usage: $self->stack()' ); ( exists($_[0]{"stack"}) ? $_[0]{"stack"} : ( $_[0]{"stack"} = do { my $default_value = []; (ref($default_value) eq 'ARRAY') or croak( "Type check failed in default: %s should be %s", "stack", "ArrayRef" ); $default_value } ) ) }
 
 # Delegated methods for stack
-# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Context.pm, line 33
+# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Context.pm, line 44
 *_pop_stack = sub {
 @_==1 or croak("Wrong number of parameters in signature for _pop_stack; usage: "."\$instance->_pop_stack()");
 1;

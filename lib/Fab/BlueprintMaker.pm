@@ -58,23 +58,37 @@ sub need ( $self, @args ) {
 	return;
 }
 
+sub _handle_step ( $self, $kind, $object ) {
+	if ( $self->_current_task ) {
+		$self->_current_task->add_step( $object );
+	}
+	elsif ( $self->blueprint->finalized ) {
+		$object->execute( $self->blueprint->context );
+	}
+	else {
+		croak "Cannot $kind() here";
+	}
+	return $object;
+}
+
 sub run ( $self, $cmd, @args ) {
 	require Fab::Step::Run;
-	my $run = 'Fab::Step::Run'->new(
+	my $step = 'Fab::Step::Run'->new(
 		command  => $cmd,
 		args     => \@args,
 		task     => $self->_current_task,
 	);
-	if ( $self->_current_task ) {
-		$self->_current_task->add_step( $run );
-	}
-	elsif ( $self->blueprint->finalized ) {
-		$run->execute( $self->blueprint->context );
-	}
-	else {
-		croak 'Cannot run() here';
-	}
-	return $run;
+	return $self->_handle_step( run => $step );
+}
+
+sub set ( $self, $key, $value ) {
+	require Fab::Step::Set;
+	my $step = 'Fab::Step::Set'->new(
+		key      => $key,
+		value    => $value,
+		task     => $self->_current_task,
+	);
+	return $self->_handle_step( set => $step );
 }
 
 sub this ( $self ) {
