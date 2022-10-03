@@ -62,6 +62,7 @@ sub this ( $self ) {
 }
 
 sub fabricate ( $self, $context ) {
+	
 	if ( $self->already_fabricated( $context ) ) {
 		$context->set_already_fabricated( $self->id, true );
 		return;
@@ -69,8 +70,21 @@ sub fabricate ( $self, $context ) {
 	
 	# In progress, but mark as already fabricated to avoid cycles
 	$context->set_already_fabricated( $self->id, true );
-	
 	$context->log( info => 'Task: "%s"', $self->name );
+	$self->satisfy_prerequisites( $context );
+	$self->run_steps( $context );
+	$self->check_postrequisites( $context );
+}
+
+sub already_fabricated ( $self, $context ) {
+	
+	if ( $context->get_already_fabricated( $self->id ) ) {
+		return true;
+	}
+	return false;
+}
+
+sub satisfy_prerequisites ( $self, $context ) {
 	
 	try {
 		for my $r ( $self->all_requirements ) {
@@ -88,7 +102,10 @@ sub fabricate ( $self, $context ) {
 		else {
 			$e->rethrow;
 		}
-	};
+	}
+}
+
+sub run_steps ( $self, $context ) {
 	
 	try {
 		for my $s ( $self->all_steps ) {
@@ -105,14 +122,11 @@ sub fabricate ( $self, $context ) {
 		else {
 			$e->rethrow;
 		}
-	};
+	}
 }
 
-sub already_fabricated ( $self, $context ) {
-	if ( $context->get_already_fabricated( $self->id ) ) {
-		return true;
-	}
-	return false;
+sub check_postrequisites ( $self, $context ) {
+	return;
 }
 
 1;
