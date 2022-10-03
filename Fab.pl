@@ -12,5 +12,3 @@ task '.test', as {
 task '.compile-mite', as {
 	run 'mite -v';
 };
-
-go;

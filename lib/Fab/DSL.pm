@@ -1,6 +1,7 @@
 package Fab::DSL;
 
 use Fab::Features;
+use Hook::AfterRuntime qw( after_runtime );
 use parent 'Exporter::Tiny';
 
 our @EXPORT = qw(
@@ -12,7 +13,6 @@ our @EXPORT = qw(
 	set
 	this
 	stash
-	go
 );
 
 sub definition_context ( $level = 1 ) {
@@ -27,6 +27,8 @@ sub _exporter_validate_opts ( $class, $globals ) {
 	$Fab::MAKER = ( $globals->{maker} ||= $globals->{maker_class}->new(
 		definition_context => definition_context(5),
 	) );
+	
+	after_runtime { $globals->{maker}->go }; 
 }
 
 sub _generate_product ( $class, $name, $args, $globals ) {

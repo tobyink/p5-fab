@@ -9,9 +9,11 @@ our $VERSION   = '0.001';
 
 use Fab::Features;
 use Fab::DSL ();
+use FindBin qw( $Bin );
 use Import::Into;
 
 our $NO_CHDIR;
+our $CHDIR_TARGET;
 
 @INC = map {
 	if (ref $_) {
@@ -24,14 +26,14 @@ our $NO_CHDIR;
 } @INC;
 
 sub import ( $class, %opts ) {
-	'Fab::Features'->import::into( 1 );
-	'Fab::DSL'->import::into( 1 );
 	
-	my ( undef, $file ) = caller( 0 );
-	if ( $file and !$opts{no_chdir} and !$NO_CHDIR ) {
-		my $path = path( $file )->absolute->parent->canonpath;
+	if ( !$opts{no_chdir} and !$NO_CHDIR ) {
+		my $path = path( $CHDIR_TARGET // $Bin )->absolute->canonpath;
 		chdir( "$path" );
 	}
+	
+	'Fab::Features'->import::into( 1 );
+	'Fab::DSL'->import::into( 1 );
 }
 
 1;
