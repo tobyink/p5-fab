@@ -37,9 +37,10 @@ push @modules, 'Syntax::Keyword::Try'
 diag "\n####";
 for my $mod ( @modules ) {
 	eval "require $mod;";
-	diag sprintf( '%s: %s', $mod, $mod->VERSION );
-	ok $mod->VERSION, "found $mod version";
+	diag sprintf( '%-20s %s', $mod, $mod->VERSION );
 }
 diag "####";
+
+pass;
 
 done_testing;
