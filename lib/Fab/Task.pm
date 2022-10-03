@@ -57,6 +57,44 @@ sub add_requirement ( $self, $r ) {
 	$self->_push_requirement( $r );
 }
 
+sub expand_requirements ( $self, $context, $already={} ) {
+	my @return;
+	$already->{ $self->name } = 1;
+	
+	for my $r ( $self->all_requirements ) {
+		my @found = $self->blueprint->find_tasks( $r );
+		if ( @found ) {
+			while ( @found ) {
+				my $f = shift @found;
+				if ( not $already->{$f->name}++ ) {
+					push @return, $f;
+					push @found, $f->expand_requirements( $context, {%$already} );
+				}
+			}
+		}
+		else {
+			if ( ( !ref($r) or ref($r) ne 'Regexp' ) and -e $r ) {
+				# Task needs a file for which we have no task to create, but
+				# the file already exists so create a do-nothing task to create
+				# it.
+				require Fab::Task::Product;
+				push @return, 'Fab::Task::Product'->new(
+					blueprint => $self->blueprint,
+					name      => $r,
+				);
+			}
+			else {
+				$context->log(
+					error => 'Task "%s" needs "%s" but it does not exist and there is no task to create it',
+					$self->name, $r,
+				);
+			}
+		}
+	}
+	
+	return @return;
+}
+
 sub this ( $self ) {
 	croak "This task doesn't support this()";
 }
@@ -130,4 +168,3 @@ sub check_postrequisites ( $self, $context ) {
 }
 
 1;
-
