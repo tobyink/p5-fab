@@ -19,8 +19,6 @@ the same terms as the Perl 5 programming language system itself.
 
 =cut
 
-use strict;
-use warnings;
 use Test2::V0;
 use Data::Dumper;
 
