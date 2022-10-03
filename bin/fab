@@ -3,5 +3,5 @@
 use Fab::Features;
 use Fab::App;
 
-my $app = 'Fab::App'->new_from_argv( @ARGV );
+my $app = 'Fab::App'->new;
 exit( $app->run );

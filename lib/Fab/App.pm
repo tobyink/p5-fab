@@ -3,11 +3,6 @@ package Fab::App;
 use Fab::Mite -all;
 use Fab::Features;
 
-# XXX: todo
-sub new_from_argv ( $class, @argv ) {
-	return $class->new;
-}
-
 sub run ( $self ) {
 	
 	my $fab_pl;
