@@ -23,6 +23,7 @@ use Test2::V0;
 
 my @modules = qw(
 	Exporter::Tiny
+	File::Which
 	Hook::AfterRuntime
 	Import::Into
 	Path::Tiny
