@@ -9,7 +9,7 @@
 	:runtime-requirement    [ :on "Text::Glob"^^:CpanId ];
 	:runtime-requirement    [ :on "Import::Into"^^:CpanId ];
 	:runtime-requirement    [ :on "Hook::AfterRuntime"^^:CpanId ];
-	:test-requirement       [ :on "Test::More 0.96"^^:CpanId ];
+	:test-requirement       [ :on "Test2::V0"^^:CpanId ];
 	:develop-recommendation [ :on "Dist::Inkt 0.001"^^:CpanId ];
 	:develop-requirement    [ :on "Mite"^^:CpanId ];
 	.
