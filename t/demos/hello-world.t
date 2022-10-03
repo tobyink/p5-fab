@@ -22,28 +22,25 @@ the same terms as the Perl 5 programming language system itself.
 use Test2::V0;
 use Test2::Require::AuthorTesting;
 use Capture::Tiny qw( capture_stderr );
-use File::chdir;
 use FindBin qw( $Bin );
 no warnings 'once';
 
-do {
-	my $dir = "$Bin/hello-world";
-	local $CWD = $Fab::CHDIR_TARGET = $dir;
-	my $stderr = capture_stderr {
-		do( './Fab.pl' );
-	};
-	
-	like( $stderr, qr/Task: ":compile"/, ':compile task was run' );
-	like( $stderr, qr/Task: "hello"/, 'hello task was run' );
-	like( $stderr, qr/Task: "hello.o"/, 'hello.o task was run' );
-	
-	my $output = `./hello`;
-	like( $output, qr/Hello, world/, 'correct executable built' );
-	
-	Fab::Context->new(
-		blueprint => $Fab::MAKER->blueprint,
-		log_level => 5,
-	)->fabricate( ':clean' );
+my $dir = "$Bin/hello-world";
+chdir( $Fab::CHDIR_TARGET = $dir );
+my $stderr = capture_stderr {
+	do( './Fab.pl' );
 };
+
+like( $stderr, qr/Task: ":compile"/, ':compile task was run' );
+like( $stderr, qr/Task: "hello"/, 'hello task was run' );
+like( $stderr, qr/Task: "hello.o"/, 'hello.o task was run' );
+
+my $output = `./hello`;
+like( $output, qr/Hello, world/, 'correct executable built' );
+
+Fab::Context->new(
+	blueprint => $Fab::MAKER->blueprint,
+	log_level => 5,
+)->fabricate( ':clean' );
 
 done_testing;

@@ -12,7 +12,6 @@
 	:runtime-requirement    [ :on "File::Which"^^:CpanId ];
 	:test-requirement       [ :on "Test2::V0"^^:CpanId ];
 	:test-requirement       [ :on "Capture::Tiny"^^:CpanId ];
-	:test-requirement       [ :on "File::chdir"^^:CpanId ];
 	:develop-recommendation [ :on "Dist::Inkt 0.001"^^:CpanId ];
 	:develop-requirement    [ :on "Mite"^^:CpanId ];
 	.
