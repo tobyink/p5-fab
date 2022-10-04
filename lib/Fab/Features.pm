@@ -11,7 +11,7 @@ sub import ( $class, %opts ) {
 	require experimental;
 	require feature;
 
-	$opts{'-try'} //= ( $] ge '5.034001' ) ? 'native' : 'module';
+	$opts{'-try'} //= ( $] ge '5.034001' ) ? 'native' : 'module'; # uncoverable statement
 
 	# use strict
 	'strict'->import::into( 1 );
