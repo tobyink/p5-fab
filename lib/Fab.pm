@@ -209,19 +209,24 @@ in the hashref.
 
 =head2 Phases
 
-B<Fab> runs in two phases: the defining stage and the producing stage.
+B<Fab> runs in two phases: the defining phase and the producing phase.
 
-During the defining stage, all the C<product> and C<task> statements are
+During the defining phase, all the C<product> and C<task> statements are
 executed by Perl, to build a I<blueprint> for your project. The contents
 of C<as> blocks are run, but the C<run>, C<echo>, and C<set> keywords
 don't actually run, echo, or set anything — they just add those steps to
 the blueprint.
 
-During the producing stage, B<Fab> identifies which products need to
+During the producing phase, B<Fab> identifies which products need to
 be produced and tasks need to be run, including their dependencies,
 then runs each step for those products and tasks. Any C<run>, C<echo>,
 and C<set> keywords which occur I<within> other C<< run sub { ... } >>
 blocks will be run at this time too.
+
+Note that any Perl statements in C<as> blocks, including conditionals, etc
+are evaluated during the defining phase. If you wish Perl code to run during
+the producing phase, you will need to wrap it in C<< run sub { ... } >> so
+that it becomes a step in a task or product.
 
 =head1 BUGS
 
