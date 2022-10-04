@@ -15,19 +15,29 @@ use Import::Into;
 our $NO_CHDIR;
 our $CHDIR_TARGET;
 
-@INC = map {
-	if (ref $_) {
-		$_;
-	}
-	else {
-		my $dir = path($_)->absolute;
-		$dir->canonpath, $_ eq '.' ? '.' : ();
-	}
-} @INC;
+sub _make_inc_absolute ( $class ) {
+	state $done = 0;
+	return if $done;
+	
+	@INC = map {
+		if (ref $_) {
+			$_;
+		}
+		else {
+			my $dir = path($_)->absolute;
+			$dir->canonpath, $_ eq '.' ? '.' : ();
+		}
+	} @INC;
+	
+	++$done;
+}
 
 sub import ( $class, %opts ) {
 	
 	if ( !$opts{no_chdir} and !$NO_CHDIR ) {
+		
+		$class->_make_inc_absolute;
+		
 		my $path = path( $CHDIR_TARGET // $Bin )->absolute->canonpath;
 		chdir( "$path" );
 		

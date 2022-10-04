@@ -74,7 +74,7 @@ sub new {
     my $no_build = delete $args->{__no_BUILD__};
 
     # Attribute definition_context (type: HashRef|Undef)
-    # param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/BlueprintMaker.pm, line 9
+    # param declaration, file lib/Fab/BlueprintMaker.pm, line 9
     if ( exists $args->{"definition_context"} ) { do { package Fab::Mite; (do { package Fab::Mite; ref($args->{"definition_context"}) eq 'HASH' } or do { package Fab::Mite; !defined($args->{"definition_context"}) }) } or croak "Type check failed in constructor: %s should be %s", "definition_context", "HashRef|Undef"; $self->{"definition_context"} = $args->{"definition_context"}; } ;
 
 
@@ -117,16 +117,16 @@ sub DESTROY {
 my $__XS = !$ENV{PERL_ONLY} && eval { require Class::XSAccessor; Class::XSAccessor->VERSION("1.19") };
 
 # Accessors for _current_task
-# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/BlueprintMaker.pm, line 23
+# field declaration, file lib/Fab/BlueprintMaker.pm, line 23
 sub _current_task { @_ > 1 ? do { blessed( $_[1] ) && $_[1]->isa( "Fab::Task" ) or croak( "Type check failed in %s: value should be %s", "accessor", "InstanceOf[\"Fab::Task\"]" ); $_[0]{"_current_task"} = $_[1]; $_[0]; } : ( $_[0]{"_current_task"} ) }
 sub _clear__current_task { @_ == 1 or croak( 'Clearer "_clear__current_task" usage: $self->_clear__current_task()' ); delete $_[0]{"_current_task"}; $_[0]; }
 
 # Accessors for blueprint
-# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/BlueprintMaker.pm, line 21
+# field declaration, file lib/Fab/BlueprintMaker.pm, line 21
 sub blueprint { @_ == 1 or croak( 'Reader "blueprint" usage: $self->blueprint()' ); ( exists($_[0]{"blueprint"}) ? $_[0]{"blueprint"} : ( $_[0]{"blueprint"} = do { my $default_value = $_[0]->_build_blueprint; blessed( $default_value ) && $default_value->isa( "Fab::Blueprint" ) or croak( "Type check failed in default: %s should be %s", "blueprint", "InstanceOf[\"Fab::Blueprint\"]" ); $default_value } ) ) }
 
 # Accessors for definition_context
-# param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/BlueprintMaker.pm, line 9
+# param declaration, file lib/Fab/BlueprintMaker.pm, line 9
 sub definition_context { @_ > 1 ? do { do { package Fab::Mite; ((ref($_[1]) eq 'HASH') or (!defined($_[1]))) } or croak( "Type check failed in %s: value should be %s", "accessor", "HashRef|Undef" ); $_[0]{"definition_context"} = $_[1]; $_[0]; } : ( $_[0]{"definition_context"} ) }
 
 

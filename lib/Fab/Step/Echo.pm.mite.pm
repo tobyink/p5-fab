@@ -63,17 +63,17 @@ sub new {
     my $no_build = delete $args->{__no_BUILD__};
 
     # Attribute definition_context (type: HashRef|Undef)
-    # param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Step.pm, line 9
+    # param declaration, file lib/Fab/Step.pm, line 9
     if ( exists $args->{"definition_context"} ) { do { package Fab::Mite; (do { package Fab::Mite; ref($args->{"definition_context"}) eq 'HASH' } or do { package Fab::Mite; !defined($args->{"definition_context"}) }) } or croak "Type check failed in constructor: %s should be %s", "definition_context", "HashRef|Undef"; $self->{"definition_context"} = $args->{"definition_context"}; } ;
 
     # Attribute task (type: Undef|InstanceOf["Fab::Task"])
-    # param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Step.pm, line 15
+    # param declaration, file lib/Fab/Step.pm, line 15
     croak "Missing key in constructor: task" unless exists $args->{"task"}; 
     do { package Fab::Mite; (do { package Fab::Mite; !defined($args->{"task"}) } or (do { use Scalar::Util (); Scalar::Util::blessed($args->{"task"}) and $args->{"task"}->isa(q[Fab::Task]) })) } or croak "Type check failed in constructor: %s should be %s", "task", "Undef|InstanceOf[\"Fab::Task\"]"; $self->{"task"} = $args->{"task"}; 
     require Scalar::Util && Scalar::Util::weaken($self->{"task"}) if ref $self->{"task"};
 
     # Attribute args (type: ArrayRef)
-    # param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Step/Echo.pm, line 11
+    # param declaration, file lib/Fab/Step/Echo.pm, line 11
     do { my $value = exists( $args->{"args"} ) ? $args->{"args"} : []; (ref($value) eq 'ARRAY') or croak "Type check failed in constructor: %s should be %s", "args", "ArrayRef"; $self->{"args"} = $value; }; 
 
 
@@ -89,7 +89,7 @@ sub new {
 my $__XS = !$ENV{PERL_ONLY} && eval { require Class::XSAccessor; Class::XSAccessor->VERSION("1.19") };
 
 # Accessors for args
-# param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Step/Echo.pm, line 11
+# param declaration, file lib/Fab/Step/Echo.pm, line 11
 if ( $__XS ) {
     Class::XSAccessor->import(
         chained => 1,

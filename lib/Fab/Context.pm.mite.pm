@@ -74,11 +74,11 @@ sub new {
     my $no_build = delete $args->{__no_BUILD__};
 
     # Attribute log_level (type: IntRange[0,5])
-    # param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Context.pm, line 11
+    # param declaration, file lib/Fab/Context.pm, line 11
     do { my $value = exists( $args->{"log_level"} ) ? $args->{"log_level"} : "0"; (do { package Fab::Mite; (do { my $tmp = $value; defined($tmp) and !ref($tmp) and $tmp =~ /\A-?[0-9]+\z/ }) } && ($value >= 0) && ($value <= 5)) or croak "Type check failed in constructor: %s should be %s", "log_level", "IntRange[0,5]"; $self->{"log_level"} = $value; }; 
 
     # Attribute blueprint (type: Object)
-    # param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Context.pm, line 16
+    # param declaration, file lib/Fab/Context.pm, line 16
     croak "Missing key in constructor: blueprint" unless exists $args->{"blueprint"}; 
     blessed( $args->{"blueprint"} ) or croak "Type check failed in constructor: %s should be %s", "blueprint", "Object"; $self->{"blueprint"} = $args->{"blueprint"}; 
 
@@ -122,11 +122,11 @@ sub DESTROY {
 my $__XS = !$ENV{PERL_ONLY} && eval { require Class::XSAccessor; Class::XSAccessor->VERSION("1.19") };
 
 # Accessors for _already_fabricated
-# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Context.pm, line 37
+# field declaration, file lib/Fab/Context.pm, line 37
 sub _already_fabricated { @_ == 1 or croak( 'Reader "_already_fabricated" usage: $self->_already_fabricated()' ); ( exists($_[0]{"_already_fabricated"}) ? $_[0]{"_already_fabricated"} : ( $_[0]{"_already_fabricated"} = do { my $default_value = {}; (ref($default_value) eq 'HASH') or croak( "Type check failed in default: %s should be %s", "_already_fabricated", "HashRef" ); $default_value } ) ) }
 
 # Delegated methods for _already_fabricated
-# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Context.pm, line 37
+# field declaration, file lib/Fab/Context.pm, line 37
 *get_already_fabricated = sub {
 @_ >= 2 or croak("Wrong number of parameters in signature for get_already_fabricated; usage: "."\$instance->get_already_fabricated(\$key)");
 my $shv_self=shift;
@@ -140,7 +140,7 @@ my $shv_ref_invocant = do { $shv_self->_already_fabricated };
 my (@shv_params) = @_; scalar(@shv_params) % 2 and do { require Carp; Carp::croak("Wrong number of parameters; expected even-sized list of keys and values") };my (@shv_keys_idx) = grep(!($_ % 2), 0..$#shv_params); my (@shv_values_idx) = grep(($_ % 2), 0..$#shv_params); grep(!defined, @shv_params[@shv_keys_idx]) and do { require Carp; Carp::croak("Undef did not pass type constraint; keys must be defined") };for my $shv_tmp (@shv_keys_idx) { do { do { package Fab::Mite; defined($shv_params[$shv_tmp]) and do { ref(\$shv_params[$shv_tmp]) eq 'SCALAR' or ref(\(my $val = $shv_params[$shv_tmp])) eq 'SCALAR' } } or croak("Type check failed in delegated method: expected %s, got value %s", "Str", $shv_params[$shv_tmp]); $shv_params[$shv_tmp] }; };; @{$shv_ref_invocant}{@shv_params[@shv_keys_idx]} = @shv_params[@shv_values_idx];wantarray ? @{$shv_ref_invocant}{@shv_params[@shv_keys_idx]} : ($shv_ref_invocant)->{$shv_params[$shv_keys_idx[0]]}
 };
 # Accessors for blueprint
-# param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Context.pm, line 16
+# param declaration, file lib/Fab/Context.pm, line 16
 if ( $__XS ) {
     Class::XSAccessor->import(
         chained => 1,
@@ -152,7 +152,7 @@ else {
 }
 
 # Accessors for log_level
-# param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Context.pm, line 11
+# param declaration, file lib/Fab/Context.pm, line 11
 if ( $__XS ) {
     Class::XSAccessor->import(
         chained => 1,
@@ -164,7 +164,7 @@ else {
 }
 
 # Accessors for settings
-# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Context.pm, line 26
+# field declaration, file lib/Fab/Context.pm, line 26
 sub fresh_settings { 
     defined wantarray or croak( "This method cannot be called in void context" );
     my $get = "settings";
@@ -182,7 +182,7 @@ sub fresh_settings {
 sub settings { @_ == 1 or croak( 'Reader "settings" usage: $self->settings()' ); ( exists($_[0]{"settings"}) ? $_[0]{"settings"} : ( $_[0]{"settings"} = do { my $default_value = {}; (ref($default_value) eq 'HASH') or croak( "Type check failed in default: %s should be %s", "settings", "HashRef" ); $default_value } ) ) }
 
 # Delegated methods for settings
-# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Context.pm, line 26
+# field declaration, file lib/Fab/Context.pm, line 26
 *get_setting = sub {
 @_ >= 2 or croak("Wrong number of parameters in signature for get_setting; usage: "."\$instance->get_setting(\$key)");
 my $shv_self=shift;
@@ -196,11 +196,11 @@ my $shv_ref_invocant = do { $shv_self->settings };
 my (@shv_params) = @_; scalar(@shv_params) % 2 and do { require Carp; Carp::croak("Wrong number of parameters; expected even-sized list of keys and values") };my (@shv_keys_idx) = grep(!($_ % 2), 0..$#shv_params); my (@shv_values_idx) = grep(($_ % 2), 0..$#shv_params); grep(!defined, @shv_params[@shv_keys_idx]) and do { require Carp; Carp::croak("Undef did not pass type constraint; keys must be defined") };for my $shv_tmp (@shv_keys_idx) { do { do { package Fab::Mite; defined($shv_params[$shv_tmp]) and do { ref(\$shv_params[$shv_tmp]) eq 'SCALAR' or ref(\(my $val = $shv_params[$shv_tmp])) eq 'SCALAR' } } or croak("Type check failed in delegated method: expected %s, got value %s", "Str", $shv_params[$shv_tmp]); $shv_params[$shv_tmp] }; };; @{$shv_ref_invocant}{@shv_params[@shv_keys_idx]} = @shv_params[@shv_values_idx];wantarray ? @{$shv_ref_invocant}{@shv_params[@shv_keys_idx]} : ($shv_ref_invocant)->{$shv_params[$shv_keys_idx[0]]}
 };
 # Accessors for stack
-# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Context.pm, line 47
+# field declaration, file lib/Fab/Context.pm, line 47
 sub stack { @_ == 1 or croak( 'Reader "stack" usage: $self->stack()' ); ( exists($_[0]{"stack"}) ? $_[0]{"stack"} : ( $_[0]{"stack"} = do { my $default_value = []; (ref($default_value) eq 'ARRAY') or croak( "Type check failed in default: %s should be %s", "stack", "ArrayRef" ); $default_value } ) ) }
 
 # Delegated methods for stack
-# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Context.pm, line 47
+# field declaration, file lib/Fab/Context.pm, line 47
 *_pop_stack = sub {
 @_==1 or croak("Wrong number of parameters in signature for _pop_stack; usage: "."\$instance->_pop_stack()");
 1;
@@ -224,7 +224,7 @@ my $shv_ref_invocant = do { $_[0]->stack };
 @{$shv_ref_invocant}
 };
 # Accessors for stash
-# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Context.pm, line 21
+# field declaration, file lib/Fab/Context.pm, line 21
 sub stash { @_ == 1 or croak( 'Reader "stash" usage: $self->stash()' ); ( exists($_[0]{"stash"}) ? $_[0]{"stash"} : ( $_[0]{"stash"} = do { my $default_value = {}; (ref($default_value) eq 'HASH') or croak( "Type check failed in default: %s should be %s", "stash", "HashRef" ); $default_value } ) ) }
 
 
