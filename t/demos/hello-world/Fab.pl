@@ -14,20 +14,20 @@ product 'hello.o', as {
 	push @clean, this;
 };
 
-product ':compile', as {
+task ':compile', as {
 	need 'hello';
 };
 
-product ':test', as {
+task ':test', as {
 	need 'hello';
 	run './hello';
 };
 
-product ':clean', as {
+task ':clean', as {
 	echo 'Running cleaning process';
 	run sub { unlink($_) for @clean };
 };
 
-product ':TOP', as {
+task ':TOP', as {
 	need ':compile';
 };
