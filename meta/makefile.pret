@@ -12,7 +12,10 @@
 	:runtime-requirement    [ :on "File::Which"^^:CpanId ];
 	:runtime-requirement    [ :on "YAML::PP"^^:CpanId ];
 	:test-requirement       [ :on "Test2::V0"^^:CpanId ];
-	:test-requirement       [ :on "Capture::Tiny"^^:CpanId ];
+	:test-requirement       [ :on "Test2::Tools::Spec"^^:CpanId ];
+	:test-requirement       [ :on "Test2::Require::AuthorTesting"^^:CpanId ];
+	:test-requirement       [ :on "Test2::Require::Module"^^:CpanId ];
+	:test-recommendation    [ :on "Capture::Tiny"^^:CpanId ];
 	:develop-recommendation [ :on "Dist::Inkt 0.001"^^:CpanId ];
 	:develop-requirement    [ :on "Mite"^^:CpanId ];
 	.

@@ -21,6 +21,7 @@ the same terms as the Perl 5 programming language system itself.
 
 use Test2::V0;
 use Test2::Require::AuthorTesting;
+use Test2::Require::Module qw( Capture::Tiny );
 use Capture::Tiny qw( capture_stderr );
 use FindBin qw( $Bin );
 no warnings 'once';
@@ -38,7 +39,7 @@ like( $stderr, qr/Task: "hello.o"/, 'hello.o task was run' );
 my $output = `./hello`;
 like( $output, qr/Hello, world/, 'correct executable built' );
 
-Fab::Context->new(
+'Fab::Context'->new(
 	blueprint => $Fab::MAKER->blueprint,
 	log_level => 5,
 )->fabricate( ':clean' );
