@@ -2,7 +2,7 @@ package Fab::DSL;
 
 use Fab::Features;
 use Hook::AfterRuntime qw( after_runtime );
-use File::Which qw( which );
+use File::Which ();
 use parent 'Exporter::Tiny';
 
 our @EXPORT = qw(
@@ -101,6 +101,10 @@ sub _generate_stash ( $class, $name, $args, $globals ) {
 	return sub :prototype() {
 		return $maker->stash();
 	};
+}
+
+sub which {
+	path( scalar File::Which::which( @_ ) );
 }
 
 1;
