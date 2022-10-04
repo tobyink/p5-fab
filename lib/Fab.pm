@@ -7,8 +7,9 @@ package Fab;
 our $AUTHORITY = 'cpan:TOBYINK';
 our $VERSION   = '0.001';
 
-use Fab::Features;
+use Fab::Config ();
 use Fab::DSL ();
+use Fab::Features;
 use FindBin qw( $Bin );
 use Import::Into;
 
@@ -32,8 +33,9 @@ sub import ( $class, %opts ) {
 		chdir( "$path" );
 	}
 	
-	'Fab::Features'->import::into( 1 );
+	'Fab::Config'->import::into( 1 );
 	'Fab::DSL'->import::into( 1 );
+	'Fab::Features'->import::into( 1 );
 }
 
 1;

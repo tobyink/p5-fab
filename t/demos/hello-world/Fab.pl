@@ -1,6 +1,6 @@
 use Fab;
 
-my $compiler = which 'g++';
+my $compiler = which $CONFIG{compiler};
 my @clean;
 
 product 'hello', as {
