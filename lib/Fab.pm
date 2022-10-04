@@ -53,12 +53,53 @@ Fab - fabrication
 
 =head1 SYNOPSIS
 
+  use Fab;
+  
+  my $compiler = which 'g++';
+  my @clean;
+  
+  product 'hello', as {
+    need 'hello.o';
+    run $compiler, '-g', '-o', this, 'hello.o';
+    push @clean, this;
+  };
+  
+  product 'hello.o', as {
+    run $compiler, '-c', '-Wall', '-g', 'hello.cpp';
+    push @clean, this;
+  };
+  
+  task ':compile', as {
+    need 'hello';
+  };
+  
+  task ':test', as {
+    need ':compile';
+    run './hello';
+  };
+  
+  task ':clean', as {
+    echo 'Running cleaning process';
+    run sub { unlink($_) for @clean };
+  };
+  
+  task ':TOP', as {
+    need ':compile';
+  };
+
 =head1 DESCRIPTION
+
+B<Fab> is an alternative to B<make>.
+
+Unlike many clones of B<make>, B<Fab> doesn't attempt to use the same syntax.
+It is more verbose, but that is considered a feature, not a bug. It allows
+you to use the full features of Perl in your build/automation process instead
+of 
 
 =head1 BUGS
 
 Please report any bugs to
-L<http://rt.cpan.org/Dist/Display.html?Queue=Fab>.
+L<https://github.com/tobyink/p5-fab/issues>.
 
 =head1 SEE ALSO
 
@@ -72,7 +113,6 @@ This software is copyright (c) 2022 by Toby Inkster.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
-
 
 =head1 DISCLAIMER OF WARRANTIES
 
