@@ -28,6 +28,7 @@ my @modules = qw(
 	Import::Into
 	Path::Tiny
 	Text::Glob
+	YAML::PP
 );
 
 push @modules, 'Syntax::Keyword::Try'
