@@ -56,7 +56,7 @@ sub find_tasks ( $self, $search ) {
 		require Text::Glob;
 		$search = Text::Glob::glob_to_regex( "$search" );
 	}
-	return grep( $_->name =~ /$search/, $self->all_tasks );
+	return grep( $_->name =~ $search, $self->all_tasks );
 }
 
 1;
