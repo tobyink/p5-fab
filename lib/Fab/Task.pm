@@ -66,9 +66,9 @@ sub expand_requirements ( $self, $context, $already={} ) {
 		if ( @found ) {
 			while ( @found ) {
 				my $f = shift @found;
-				if ( not $already->{$f->name}++ ) {
+				if ( not $already->{ $f->name }++ ) {
 					push @return, $f;
-					push @found, $f->expand_requirements( $context, {%$already} );
+					push @found, $f->expand_requirements( $context, { $already->%* } );
 				}
 			}
 		}
