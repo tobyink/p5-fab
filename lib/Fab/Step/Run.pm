@@ -6,6 +6,7 @@ use Fab::Features;
 extends 'Fab::Step';
 
 use Fab::Exception::StepFailed ();
+use IPC::Run ();
 
 param command => (
 	required    => true,
@@ -48,13 +49,19 @@ sub execute ( $self, $context ) {
 		$command = $command->stringify;
 	}
 	
-	# XXX: optionally capture STDOUT and STDERR
-	my $result = system( $command, @args );
-	$result >>= 8;
+	my $in  = $context->get_setting( 'stdin'  ) // \*STDIN;
+	my $out = $context->get_setting( 'stdout' ) // \*STDOUT;
+	my $err = $context->get_setting( 'stderr' ) // \*STDERR;
+	my $ok  = IPC::Run::run(
+		[ $command, @args ],
+		'<'  => $in,
+		'>'  => $out,
+		'2>' => $err,
+	);
 	
-	if ( $result ) {
+	if ( not $ok ) {
 		'Fab::Exception::StepFailed'->throw(
-			error => "process ended with code $result",
+			error => "process failed",
 			step  => $self,
 		);
 	}

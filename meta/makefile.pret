@@ -11,6 +11,7 @@
 	:runtime-requirement    [ :on "Hook::AfterRuntime"^^:CpanId ];
 	:runtime-requirement    [ :on "File::Which"^^:CpanId ];
 	:runtime-requirement    [ :on "YAML::PP"^^:CpanId ];
+	:runtime-requirement    [ :on "IPC::Run"^^:CpanId ];
 	:test-requirement       [ :on "Test2::V0"^^:CpanId ];
 	:test-requirement       [ :on "Test2::Tools::Spec"^^:CpanId ];
 	:test-requirement       [ :on "Test2::Require::AuthorTesting"^^:CpanId ];

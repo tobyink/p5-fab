@@ -26,6 +26,7 @@ my @modules = qw(
 	File::Which
 	Hook::AfterRuntime
 	Import::Into
+	IPC::Run
 	Path::Tiny
 	Text::Glob
 	YAML::PP
