@@ -25,8 +25,8 @@ sub _process_arg ( $self, $arg, $context ) {
 	if ( blessed $arg and $arg->isa( 'Fab::BlueprintMaker::Stash' ) ) {
 		return $arg->resolve( $context->stash );
 	}
-	if ( blessed $arg and $arg->isa( 'Path::Tiny' ) and ref($self->command) ne 'CODE' ) {
-		return $arg->absolute->stringify;
+	if ( blessed $arg and $arg->isa( 'Path::Tiny' ) ) {
+		return $arg->stringify;
 	}
 	return $arg;
 }
