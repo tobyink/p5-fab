@@ -214,7 +214,7 @@ B<Fab> runs in two phases: the defining phase and the producing phase.
 During the defining phase, all the C<product> and C<task> statements are
 executed by Perl, to build a I<blueprint> for your project. The contents
 of C<as> blocks are run, but the C<run>, C<echo>, and C<set> keywords
-don't actually run, echo, or set anything — they just add those steps to
+don't actually run, echo, or set anything; they just add those steps to
 the blueprint.
 
 During the producing phase, B<Fab> identifies which products need to
@@ -227,6 +227,53 @@ Note that any Perl statements in C<as> blocks, including conditionals, etc
 are evaluated during the defining phase. If you wish Perl code to run during
 the producing phase, you will need to wrap it in C<< run sub { ... } >> so
 that it becomes a step in a task or product.
+
+=head2 Configuration
+
+If a file called F<Fab.yml> is found in the same directory as F<Fab.pl>,
+then this will be parsed as a YAML file and the resulting data will be
+available in the C<< %CONFIG >> hash.
+
+For example, in F<Fab.yml>:
+
+  ---
+  compiler: g++
+
+And in F<Fab.pl>:
+
+  product 'hello.o', as {
+    my $compiler = which( $CONFIG{compiler} );
+    run $compiler, '-c', '-Wall', '-g', 'hello.cpp';
+    push @clean, this;
+  };
+
+This allows you to make parts of your build process configurable without
+relying on environment variables, command-line arguments, or editing
+settings directly in F<Fab.pl>.
+
+=head1 INSTALLATION
+
+B<Fab> requires Perl 5.28 or above, and recommends at least Perl 5.34.1.
+(Older versions of Perl do not have support for subroutine signatures which
+B<Fab> uses internally and encourages the use of in F<Fab.pl> scripts.)
+
+Additionally the L<Exporter::Tiny>, L<File::Which>, L<Hook::AfterRuntime>,
+L<Import::Into>, L<IPC::Run>, L<Path::Tiny>, L<Text::Glob>, and L<YAML::PP>
+modules are required, which can be downloaded from the CPAN.
+
+To install B<Fab>, I recommend you use L<App::cpanminus>. If you do not
+already have it, it can be installed using:
+
+  curl -L https://cpanmin.us | perl - App::cpanminus
+
+You may need to run this as root if you don't have permission to write to
+Perl's library paths.
+
+Once L<App::cpanminus> is installed, run:
+
+  cpanm Fab
+
+This will install B<Fab> as well as all its dependencies from the CPAN.
 
 =head1 BUGS
 

@@ -74,11 +74,11 @@ sub new {
     my $no_build = delete $args->{__no_BUILD__};
 
     # Attribute definition_context (type: HashRef|Undef)
-    # param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Blueprint.pm, line 6
+    # param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Blueprint.pm, line 9
     if ( exists $args->{"definition_context"} ) { do { package Fab::Mite; (do { package Fab::Mite; ref($args->{"definition_context"}) eq 'HASH' } or do { package Fab::Mite; !defined($args->{"definition_context"}) }) } or croak "Type check failed in constructor: %s should be %s", "definition_context", "HashRef|Undef"; $self->{"definition_context"} = $args->{"definition_context"}; } ;
 
     # Attribute finalized (type: Bool)
-    # field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Blueprint.pm, line 12
+    # field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Blueprint.pm, line 15
     $self->{"finalized"} = do { my $default_value = false; (!ref $default_value and (!defined $default_value or $default_value eq q() or $default_value eq '0' or $default_value eq '1')) or croak( "Type check failed in default: %s should be %s", "finalized", "Bool" ); $default_value }; 
 
 
@@ -121,7 +121,7 @@ sub DESTROY {
 my $__XS = !$ENV{PERL_ONLY} && eval { require Class::XSAccessor; Class::XSAccessor->VERSION("1.19") };
 
 # Accessors for context
-# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Blueprint.pm, line 38
+# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Blueprint.pm, line 41
 if ( $__XS ) {
     Class::XSAccessor->import(
         chained => 1,
@@ -148,15 +148,15 @@ sub _set_context {
  }
 
 # Delegated methods for context
-# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Blueprint.pm, line 38
+# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Blueprint.pm, line 41
 sub stash { shift->_assert_blessed_context->stash( @_ ) }
 
 # Accessors for definition_context
-# param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Blueprint.pm, line 6
+# param declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Blueprint.pm, line 9
 sub definition_context { @_ > 1 ? do { do { package Fab::Mite; ((ref($_[1]) eq 'HASH') or (!defined($_[1]))) } or croak( "Type check failed in %s: value should be %s", "accessor", "HashRef|Undef" ); $_[0]{"definition_context"} = $_[1]; $_[0]; } : ( $_[0]{"definition_context"} ) }
 
 # Accessors for finalized
-# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Blueprint.pm, line 12
+# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Blueprint.pm, line 15
 if ( $__XS ) {
     Class::XSAccessor->import(
         chained => 1,
@@ -168,22 +168,22 @@ else {
 }
 
 # Delegated methods for finalized
-# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Blueprint.pm, line 12
+# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Blueprint.pm, line 15
 *finalize = sub {
 @_==1 or croak("Wrong number of parameters in signature for finalize; usage: "."\$instance->finalize()");
 do { my $shv_real_invocant = $_[0]->finalized; ( $_[0]->{"finalized"} = do { my $shv_final_unchecked =  !!1 ; do { (!ref $shv_final_unchecked and (!defined $shv_final_unchecked or $shv_final_unchecked eq q() or $shv_final_unchecked eq '0' or $shv_final_unchecked eq '1')) or croak("Type check failed in delegated method: expected %s, got value %s", "Bool", $shv_final_unchecked); $shv_final_unchecked }; } ) }
 };
 # Accessors for task_lookup
-# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Blueprint.pm, line 36
+# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Blueprint.pm, line 39
 sub clear_task_lookup { @_ == 1 or croak( 'Clearer "clear_task_lookup" usage: $self->clear_task_lookup()' ); delete $_[0]{"task_lookup"}; $_[0]; }
 sub task_lookup { @_ == 1 or croak( 'Reader "task_lookup" usage: $self->task_lookup()' ); ( exists($_[0]{"task_lookup"}) ? $_[0]{"task_lookup"} : ( $_[0]{"task_lookup"} = do { my $default_value = $_[0]->_build_task_lookup; (ref($default_value) eq 'HASH') or croak( "Type check failed in default: %s should be %s", "task_lookup", "HashRef" ); $default_value } ) ) }
 
 # Accessors for tasks
-# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Blueprint.pm, line 20
+# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Blueprint.pm, line 23
 sub tasks { @_ == 1 or croak( 'Reader "tasks" usage: $self->tasks()' ); ( exists($_[0]{"tasks"}) ? $_[0]{"tasks"} : ( $_[0]{"tasks"} = do { my $default_value = []; do { package Fab::Mite; (ref($default_value) eq 'ARRAY') and do { my $ok = 1; for my $i (@{$default_value}) { ($ok = 0, last) unless (do { use Scalar::Util (); Scalar::Util::blessed($i) and $i->isa(q[Fab::Task]) }) }; $ok } } or croak( "Type check failed in default: %s should be %s", "tasks", "ArrayRef[InstanceOf[\"Fab::Task\"]]" ); $default_value } ) ) }
 
 # Delegated methods for tasks
-# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Blueprint.pm, line 20
+# field declaration, file /home/tai/src/p5/p5-fab/lib/Fab/Blueprint.pm, line 23
 *_push_task = sub {
 my $shv_self=shift;
 for my $shv_value (@_) { do { (do { use Scalar::Util (); Scalar::Util::blessed($shv_value) and $shv_value->isa(q[Fab::Task]) }) or croak("Type check failed in delegated method: expected %s, got value %s", "InstanceOf[\"Fab::Task\"]", $shv_value); $shv_value }; }
