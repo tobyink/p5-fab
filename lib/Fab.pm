@@ -7,7 +7,6 @@ package Fab;
 our $AUTHORITY = 'cpan:TOBYINK';
 our $VERSION   = '0.001';
 
-use Fab::Config ();
 use Fab::DSL ();
 use Fab::Features;
 use FindBin qw( $Bin );
@@ -31,9 +30,11 @@ sub import ( $class, %opts ) {
 	if ( !$opts{no_chdir} and !$NO_CHDIR ) {
 		my $path = path( $CHDIR_TARGET // $Bin )->absolute->canonpath;
 		chdir( "$path" );
+		
+		require Fab::Config;
+		'Fab::Config'->import::into( 1 );
 	}
 	
-	'Fab::Config'->import::into( 1 );
 	'Fab::DSL'->import::into( 1 );
 	'Fab::Features'->import::into( 1 );
 }
