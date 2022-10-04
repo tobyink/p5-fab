@@ -42,7 +42,7 @@ sub import ( $class, %opts ) {
 		chdir( "$path" );
 		
 		require Fab::Config;
-		'Fab::Config'->import::into( 1 );
+		'Fab::Config'->import::into( 1, @{ $opts{config} // [] } );
 	}
 	
 	'Fab::DSL'->import::into( 1, @{ $opts{dsl} // [] } );
