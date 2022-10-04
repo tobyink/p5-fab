@@ -16,6 +16,7 @@
 	:test-requirement       [ :on "Test2::Require::AuthorTesting"^^:CpanId ];
 	:test-requirement       [ :on "Test2::Require::Module"^^:CpanId ];
 	:test-recommendation    [ :on "Capture::Tiny"^^:CpanId ];
+	:test-recommendation    [ :on "Syntax::Keyword::Try"^^:CpanId ];
 	:develop-recommendation [ :on "Dist::Inkt 0.001"^^:CpanId ];
 	:develop-requirement    [ :on "Mite"^^:CpanId ];
 	.

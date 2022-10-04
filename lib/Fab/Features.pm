@@ -7,9 +7,11 @@ package Fab::Features;
 use Import::Into;
 use experimental 'signatures';
 
-sub import {
+sub import ( $class, %opts ) {
 	require experimental;
 	require feature;
+
+	$opts{'-try'} //= ( $] ge '5.034001' ) ? 'native' : 'module';
 
 	# use strict
 	'strict'->import::into( 1 );
@@ -21,11 +23,11 @@ sub import {
 	'feature'->import::into( 1, 'state' );
 
 	# use feature 'try';
-	if ( $] ge '5.034001' ) {
+	if ( $opts{'-try'} eq 'native' ) {
 		'feature'->import::into( 1, 'try' );
 		'warnings'->unimport::out_of( 1, 'experimental::try' );
 	}
-	else {
+	elsif ( $opts{'-try'} eq 'module' ) {
 		require Syntax::Keyword::Try;
 		'Syntax::Keyword::Try'->import::into( 1 );
 	}
