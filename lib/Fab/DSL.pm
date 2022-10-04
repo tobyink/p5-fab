@@ -1,5 +1,8 @@
 package Fab::DSL;
 
+our $AUTHORITY = 'cpan:TOBYINK';
+our $VERSION   = '0.000_001';
+
 use Fab::Features;
 use Hook::AfterRuntime qw( after_runtime );
 use File::Which ();

@@ -1,5 +1,8 @@
 package Fab::BlueprintMaker::Stash;
 
+our $AUTHORITY = 'cpan:TOBYINK';
+our $VERSION   = '0.000_001';
+
 use Fab::Features;
 use B ();
 
@@ -30,6 +33,8 @@ sub _overload_HASH ( $self, @ ) {
 }
 
 package Fab::BlueprintMaker::Stash::HASH {
+	our $AUTHORITY = 'cpan:TOBYINK';
+	our $VERSION   = '0.000_001';
 	sub TIEHASH ( $class, $object ) {
 		return bless( \$object, $class );
 	}
@@ -40,6 +45,8 @@ package Fab::BlueprintMaker::Stash::HASH {
 }
 
 package Fab::BlueprintMaker::Stash::ARRAY {
+	our $AUTHORITY = 'cpan:TOBYINK';
+	our $VERSION   = '0.000_001';
 	sub TIEARRAY ( $class, $object ) {
 		return bless( \$object, $class );
 	}

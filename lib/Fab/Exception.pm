@@ -1,5 +1,8 @@
 package Fab::Exception;
 
+our $AUTHORITY = 'cpan:TOBYINK';
+our $VERSION   = '0.000_001';
+
 use Fab::Mite -all, -role;
 use Fab::Features;
 

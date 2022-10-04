@@ -5,7 +5,7 @@ use warnings;
 package Fab;
 
 our $AUTHORITY = 'cpan:TOBYINK';
-our $VERSION   = '0.001';
+our $VERSION   = '0.000_001';
 
 use Fab::DSL ();
 use Fab::Features;

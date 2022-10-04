@@ -1,5 +1,8 @@
 package Fab::Config;
 
+our $AUTHORITY = 'cpan:TOBYINK';
+our $VERSION   = '0.000_001';
+
 use Fab::Features;
 use Fab::Mite ();
 use YAML::PP qw( LoadFile );

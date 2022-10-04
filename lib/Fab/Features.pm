@@ -4,6 +4,9 @@ use warnings;
 
 package Fab::Features;
 
+our $AUTHORITY = 'cpan:TOBYINK';
+our $VERSION   = '0.000_001';
+
 use Import::Into;
 use experimental 'signatures';
 
