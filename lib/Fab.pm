@@ -156,7 +156,20 @@ string for C<sprintf>.
 
 =item C<< set $option, $value >>
 
-Tweaks internal B<Fab> options.
+Tweaks options for this task/product. Options are case-sensitive
+and normally all lowercase.
+
+C<< set stdin => $in >> sets STDIN for any further C<< run $command >>
+steps. C<< $in >> may be a reference to a scalar string,
+a coderef, a filename, or a filehandle open for reading.
+
+C<< set stdout => $out >> sets STDOUT for any further C<< run $command >>
+steps. C<< $out >> may be a reference to a scalar string,
+a coderef, a filename, or a filehandle open for writing.
+
+C<< set stderr => $err >> sets STDERR for any further C<< run $command >>
+steps. C<< $err >> may be a reference to a scalar string,
+a coderef, a filename, or a filehandle open for writing.
 
 =back
 
