@@ -45,8 +45,8 @@ sub import ( $class, %opts ) {
 		'Fab::Config'->import::into( 1 );
 	}
 	
-	'Fab::DSL'->import::into( 1 );
-	'Fab::Features'->import::into( 1 );
+	'Fab::DSL'->import::into( 1, @{ $opts{dsl} // [] } );
+	'Fab::Features'->import::into( 1, @{ $opts{features} // [] } );
 }
 
 1;
