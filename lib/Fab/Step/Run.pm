@@ -56,7 +56,7 @@ sub execute ( $self, $context ) {
 	my $out = $context->get_setting( 'stdout' ) // \*STDOUT;
 	my $err = $context->get_setting( 'stderr' ) // \*STDERR;
 	my $ok  = IPC::Run::run(
-		[ $command, @args ],
+		@args ? [ $command, @args ] : [ qw( sh -c ), $command ], # XXX: windows
 		'<'  => $in,
 		'>'  => $out,
 		'2>' => $err,
