@@ -18,6 +18,7 @@
 	:test-requirement       [ :on "Test2::Require::Module"^^:CpanId ];
 	:test-recommendation    [ :on "Capture::Tiny"^^:CpanId ];
 	:test-recommendation    [ :on "Syntax::Keyword::Try"^^:CpanId ];
+	:test-recommendation    [ :on "Makefile::Parser"^^:CpanId ];
 	:develop-recommendation [ :on "Dist::Inkt 0.001"^^:CpanId ];
 	:develop-requirement    [ :on "Mite"^^:CpanId ];
 	.
