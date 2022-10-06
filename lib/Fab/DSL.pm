@@ -4,7 +4,6 @@ our $AUTHORITY = 'cpan:TOBYINK';
 our $VERSION   = '0.000_001';
 
 use Fab::Features;
-use Hook::AfterRuntime qw( after_runtime );
 use File::Which ();
 use parent 'Exporter::Tiny';
 
@@ -28,13 +27,20 @@ sub definition_context ( $level = 1 ) {
 }
 
 sub _exporter_validate_opts ( $class, $globals ) {
+	
 	require Fab::BlueprintMaker;
-	$globals->{maker_class} = 'Fab::BlueprintMaker';
+	$globals->{maker_class} ||= 'Fab::BlueprintMaker';
+	
 	$Fab::MAKER = ( $globals->{maker} ||= $globals->{maker_class}->new(
 		definition_context => definition_context(5),
 	) );
 	
-	after_runtime { $globals->{maker}->go }; 
+	unless ( $globals->{no_syntax_hack} ) {
+		require Hook::AfterRuntime;
+		&Hook::AfterRuntime::after_runtime( sub {
+			$globals->{maker}->go;
+		} );
+	}
 }
 
 sub _generate_product ( $class, $name, $args, $globals ) {
