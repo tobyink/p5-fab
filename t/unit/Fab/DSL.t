@@ -22,9 +22,40 @@ the same terms as the Perl 5 programming language system itself.
 use Test2::V0 -target => 'Fab::DSL';
 use Test2::Tools::Spec;
 
+describe "package `$CLASS`" => sub {
+	
+	tests 'it is an exporter' => sub {
+		
+		isa_ok $CLASS, 'Exporter::Tiny';
+	};
+};
+
+describe 'package variable @EXPORT' => sub {
+	
+	tests 'it lists correct functions' => sub {
+		
+		is(
+			\@Fab::DSL::EXPORT,
+			bag {
+				item string 'product';
+				item string 'task';
+				item string 'as';
+				item string 'need';
+				item string 'run';
+				item string 'set';
+				item string 'this';
+				item string 'stash';
+				item string 'echo';
+				item string 'which';
+				end;
+			},
+		);
+	};
+};
+
 describe 'function `definition_context`' => sub {
 	
-	tests 'call function' => sub {
+	tests 'it works' => sub {
 		
 		my $ctx = Fab::DSL::definition_context( 0 );
 		is(
@@ -42,7 +73,7 @@ describe 'function `definition_context`' => sub {
 
 describe 'method `_exporter_validate_opts`' => sub {
 	
-	tests 'call method' => sub {
+	tests 'it works' => sub {
 		
 		my $called = 0;
 		my $globals = {
@@ -97,7 +128,7 @@ describe 'method `_generate_product`' => sub {
 	
 	my $CODE = sub {};
 	
-	tests 'call method' => generator_tests(
+	tests 'it works' => generator_tests(
 		product => undef,
 		[ 'foo', as => $CODE, xyz => 123 ],
 		bag {
@@ -114,7 +145,7 @@ describe 'method `_generate_task`' => sub {
 	
 	my $CODE = sub {};
 	
-	tests 'call method' => generator_tests(
+	tests 'it works' => generator_tests(
 		task => undef,
 		[ 'foo', as => $CODE, xyz => 123 ],
 		bag {
@@ -128,7 +159,7 @@ describe 'method `_generate_task`' => sub {
 };
 
 describe 'method `_generate_need`' => sub {
-	tests 'call method' => generator_tests(
+	tests 'it works' => generator_tests(
 		need => undef,
 		[ 'xyz' ],
 		[ 'xyz' ],
@@ -136,7 +167,7 @@ describe 'method `_generate_need`' => sub {
 };
 
 describe 'method `_generate_run`' => sub {
-	tests 'call method' => generator_tests(
+	tests 'it works' => generator_tests(
 		run => undef,
 		[ 'xyz' ],
 		[ 'xyz' ],
@@ -144,7 +175,7 @@ describe 'method `_generate_run`' => sub {
 };
 
 describe 'method `_generate_set`' => sub {
-	tests 'call method' => generator_tests(
+	tests 'it works' => generator_tests(
 		set => undef,
 		[ 'xyz', 123 ],
 		[ 'xyz', 123 ],
@@ -152,7 +183,7 @@ describe 'method `_generate_set`' => sub {
 };
 
 describe 'method `_generate_echo`' => sub {
-	tests 'call method' => generator_tests(
+	tests 'it works' => generator_tests(
 		echo => undef,
 		[ 'xyz' ],
 		[ 'xyz' ],
@@ -160,7 +191,7 @@ describe 'method `_generate_echo`' => sub {
 };
 
 describe 'method `_generate_this`' => sub {
-	tests 'call method' => generator_tests(
+	tests 'it works' => generator_tests(
 		this => '',
 		[ 123 ],
 		[],
@@ -168,7 +199,7 @@ describe 'method `_generate_this`' => sub {
 };
 
 describe 'method `_generate_stash`' => sub {
-	tests 'call method' => generator_tests(
+	tests 'it works' => generator_tests(
 		stash => '',
 		[ 123 ],
 		[],
@@ -184,37 +215,6 @@ describe 'function `as`' => sub {
 	
 	tests 'it exists' => sub { ok exists &Fab::DSL::as; };
 	tests 'it has the correct prototype' => sub { is prototype(\&Fab::DSL::as), '&'; };
-};
-
-describe 'package variable @EXPORT' => sub {
-	
-	tests 'lists correct functions' => sub {
-		
-		is(
-			\@Fab::DSL::EXPORT,
-			bag {
-				item string 'product';
-				item string 'task';
-				item string 'as';
-				item string 'need';
-				item string 'run';
-				item string 'set';
-				item string 'this';
-				item string 'stash';
-				item string 'echo';
-				item string 'which';
-				end;
-			},
-		);
-	};
-};
-
-describe 'package' => sub {
-	
-	tests 'it is an exporter' => sub {
-		
-		isa_ok $CLASS, 'Exporter::Tiny';
-	};
 };
 
 done_testing;

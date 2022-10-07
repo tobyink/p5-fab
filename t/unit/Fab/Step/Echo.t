@@ -23,21 +23,35 @@ use Test2::V0 -target => 'Fab::Step::Echo';
 use Test2::Tools::Spec;
 use Path::Tiny qw( path );
 
+describe "class `$CLASS`" => sub {
+	
+	tests 'it is a Fab::Step' => sub {
+		
+		isa_ok $CLASS, 'Fab::Step';
+	};
+	
+	tests 'it has the expected attributes' => sub {
+		
+		can_ok $CLASS, $_ for
+			qw( args definition_context task );
+	};
+};
+
 describe "method `execute`" => sub {
 	
 	my ( $test_args, $expected );
 	
-	case 'simple string value' => sub {
+	case 'with simple string values' => sub {
 		$test_args = [         qw/ foo bar baz / ];
 		$expected  = [ info => qw/ foo bar baz / ];
 	};
 	
-	case 'including paths' => sub {
+	case 'with values including paths' => sub {
 		$test_args = [         qw/ foo bar /, path( 'baz' ) ];
 		$expected  = [ info => qw/ foo bar /,       'baz'   ];
 	};
 	
-	tests 'call method' => sub {
+	tests 'it works' => sub {
 		
 		my @got;
 		my $mock_context = mock( {}, set => [
@@ -63,7 +77,7 @@ describe "method `execute`" => sub {
 
 describe "method `_process_args`" => sub {
 
-	tests 'call method' => sub {
+	tests 'it works' => sub {
 		
 		my @got;
 		my $object = $CLASS->new(
@@ -110,19 +124,19 @@ describe "method `_process_arg`" => sub {
 	
 	my ( $test_arg, $expected, $stash_call_expected );
 	
-	case 'simple string value' => sub {
+	case 'with simple string value' => sub {
 		$test_arg = 'foo';
 		$expected = 'foo';
 		$stash_call_expected = 0;
 	};
 	
-	case 'path' => sub {
+	case 'with path' => sub {
 		$test_arg = path( 'bar' );
 		$expected =       'bar';
 		$stash_call_expected = 0;
 	};
 	
-	case 'stash reference' => sub {
+	case 'with stash reference' => sub {
 		$test_arg = mock( {}, set => [
 			isa     => sub { pop eq 'Fab::BlueprintMaker::Stash' },
 			resolve => sub { pop->{is_ok} or die; 'baz' },
@@ -131,7 +145,7 @@ describe "method `_process_arg`" => sub {
 		$stash_call_expected = 1;
 	};
 	
-	tests 'call method' => sub {
+	tests 'it works' => sub {
 		
 		my $stash_called = 0;
 		my $mock_context = mock( {}, set => [

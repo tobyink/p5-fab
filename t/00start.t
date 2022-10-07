@@ -36,7 +36,7 @@ push @modules, 'Syntax::Keyword::Try'
 	if $] lt '5.034001';
 
 diag "\n####";
-for my $mod ( @modules ) {
+for my $mod ( sort @modules ) {
 	eval "require $mod;";
 	diag sprintf( '%-20s %s', $mod, $mod->VERSION );
 }

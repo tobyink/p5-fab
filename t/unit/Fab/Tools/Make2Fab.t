@@ -39,33 +39,33 @@ foo: foo.o
 	$(CC) -g -o foo foo.o
 MAKEFILE
 	
-	case 'ScalarRef input' => sub {
+	case 'with ScalarRef' => sub {
 		my $str = $makefile;
 		$input = \$str;
 	};
 	
-	case 'Path::Tiny input' => sub {
+	case 'with Path::Tiny' => sub {
 		my $tmp = 'Path::Tiny'->tempfile;
 		$tmp->spew( $makefile );
 		push @tempfiles, $tmp;
 		$input = $tmp;
 	};
 	
-	case 'Filename input' => sub {
+	case 'with filename' => sub {
 		my $tmp = 'Path::Tiny'->tempfile;
 		$tmp->spew( $makefile );
 		push @tempfiles, $tmp;
 		$input = $tmp->stringify;
 	};
 	
-	case 'FileHandle input' => sub {
+	case 'with FileHandle' => sub {
 		my $tmp = 'Path::Tiny'->tempfile;
 		$tmp->spew( $makefile );
 		push @tempfiles, $tmp;
 		$input = $tmp->openr;
 	};
 	
-	case 'IO::Handle input' => sub {
+	case 'with IO::Handle' => sub {
 		my $tmp = 'Path::Tiny'->tempfile;
 		$tmp->spew( $makefile );
 		push @tempfiles, $tmp;
@@ -75,7 +75,7 @@ MAKEFILE
 		$input->open( "< $tmp" );
 	};
 	
-	tests "gives expected parsed result" => sub {
+	tests "it gives expected parsed result" => sub {
 		my $object = $CLASS->new( input => $input );
 		my $parsed = $object->_build_parsed;
 		
@@ -87,7 +87,7 @@ MAKEFILE
 
 describe 'method `_build_output_header`' => sub {
 	
-	tests "gives expected string" => sub {
+	tests "it gives expected string" => sub {
 		
 		my $object = $CLASS->new( input => \'' );
 		
@@ -97,7 +97,7 @@ describe 'method `_build_output_header`' => sub {
 
 describe 'method `_build_output_vars`' => sub {
 	
-	tests "gives expected string" => sub {
+	tests "it gives expected string" => sub {
 		
 		my $object = $CLASS->new( input => \'' );
 		$object->{parsed} = mock( {}, set => [
@@ -116,7 +116,7 @@ VARS
 
 describe 'method `_build_output_targets`' => sub {
 	
-	tests "gives expected string" => sub {
+	tests "it gives expected string" => sub {
 		
 		my $object = $CLASS->new( input => \'' );
 		$object->{parsed} = mock( {}, set => [
@@ -149,7 +149,7 @@ TARGETS
 
 describe 'method `_build_output`' => sub {
 	
-	tests "gives expected string" => sub {
+	tests "it gives expected string" => sub {
 		
 		my $object = $CLASS->new( input => \'' );
 		my $guard  = mock( $object, set => [
@@ -166,27 +166,27 @@ describe 'method `clean_command`' => sub {
 	
 	my ( $command, $expected );
 	
-	case "just needs quoting" => sub {
+	case "with input that needs quoting" => sub {
 		$command  = 'foo bar';
 		$expected = q{"foo bar"};
 	};
 	
-	case "too much whitespace" => sub {
+	case "with input with too much whitespace" => sub {
 		$command  = '   foo  bar     ';
 		$expected = q{"foo  bar"};
 	};
 	
-	case "contains comment" => sub {
+	case "with input containing comment" => sub {
 		$command  = 'foo # hello';
 		$expected = q{"foo"};
 	};
 	
-	case "contains variable" => sub {
+	case "with input containing variable" => sub {
 		$command  = 'foo $(MYVAR)';
 		$expected = q{"foo $MYVAR"};
 	};
 	
-	tests "gives expected string" => sub {
+	tests "it gives expected string" => sub {
 		
 		my $object = $CLASS->new( input => \'' );
 		

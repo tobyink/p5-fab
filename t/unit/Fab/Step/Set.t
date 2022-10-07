@@ -22,22 +22,36 @@ the same terms as the Perl 5 programming language system itself.
 use Test2::V0 -target => 'Fab::Step::Set';
 use Test2::Tools::Spec;
 
+describe "class `$CLASS`" => sub {
+	
+	tests 'it is a Fab::Step' => sub {
+		
+		isa_ok $CLASS, 'Fab::Step';
+	};
+	
+	tests 'it has the expected attributes' => sub {
+		
+		can_ok $CLASS, $_ for
+			qw( key value definition_context task );
+	};
+};
+
 describe "method `execute`" => sub {
 	
 	my ( $testing_key, $testing_value );
 	my ( $expected_key, $expected_value );
 	
-	case 'simple string value' => sub {
+	case 'with simple string value' => sub {
 		( $testing_key,  $testing_value  ) = ( 'foo', 'bar' );
 		( $expected_key, $expected_value ) = ( 'foo', 'bar' );
 	};
 	
-	case 'reference value' => sub {
+	case 'with reference value' => sub {
 		( $testing_key,  $testing_value  ) = ( 'foo', [ 'bar' ] );
 		( $expected_key, $expected_value ) = ( 'foo', array { item string 'bar' } );
 	};
 	
-	tests 'call method' => sub {
+	tests 'it works' => sub {
 		
 		my @got;
 		my $mock_context = mock( {}, set => [
