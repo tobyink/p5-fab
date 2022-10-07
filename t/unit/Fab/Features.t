@@ -23,7 +23,7 @@ use Test2::V0 -target => 'Fab::Features', -no_pragmas => 1;
 use Test2::Tools::Spec;
 
 describe 'use strict' => sub {
-	tests 'worked' => sub {
+	tests 'it was set up' => sub {
 		my $e = do {
 			local $@;
 			eval "package Local::ABC1; use $CLASS; \$xyz = 1;";
@@ -35,7 +35,7 @@ describe 'use strict' => sub {
 };
 
 describe 'use warnings' => sub {
-	tests 'worked' => sub {
+	tests 'it was set up' => sub {
 		my $e;
 		my $w = warning {
 			local $@;
@@ -49,7 +49,7 @@ describe 'use warnings' => sub {
 };
 
 describe 'use feature qw(state)' => sub {
-	tests 'worked' => sub {
+	tests 'it was set up' => sub {
 		my $e = do {
 			local $@;
 			eval "package Local::ABC3; use $CLASS; state \$xyz = 1;";
@@ -61,7 +61,7 @@ describe 'use feature qw(state)' => sub {
 };
 
 describe 'use feature qw(signatures)' => sub {
-	tests 'worked' => sub {
+	tests 'it was set up' => sub {
 		my $e = do {
 			local $@;
 			eval "package Local::ABC4; use $CLASS; sub xyz (\$x, \$y, \$z ) { \$x + \$z }; die unless xyz(1..3)==4;";
@@ -73,7 +73,7 @@ describe 'use feature qw(signatures)' => sub {
 };
 
 describe 'use feature qw(try)' => sub {
-	tests 'worked' => sub {
+	tests 'it was set up' => sub {
 		my $e = do {
 			local $@;
 			eval "package Local::ABC5; use $CLASS; try { die; } catch ( \$e ) {};";
@@ -85,7 +85,7 @@ describe 'use feature qw(try)' => sub {
 };
 
 describe 'use feature qw(try) with native implementation' => sub {
-	tests 'worked' => sub {
+	tests 'it was set up' => sub {
 		my $e = do {
 			local $@;
 			eval "package Local::ABC6; use $CLASS -try => 'native'; try { die; } catch ( \$e ) {};";
@@ -97,7 +97,7 @@ describe 'use feature qw(try) with native implementation' => sub {
 } if $] ge '5.034001';
 
 describe 'use feature qw(try) with module implementation' => sub {
-	tests 'worked' => sub {
+	tests 'it was set up' => sub {
 		my $e = do {
 			local $@;
 			eval "package Local::ABC7; use $CLASS -try => 'module'; try { die; } catch ( \$e ) {};";
@@ -109,7 +109,7 @@ describe 'use feature qw(try) with module implementation' => sub {
 } if eval 'require Syntax::Keyword::Try; 1';
 
 describe 'use Path::Tiny qw(path)' => sub {
-	tests 'worked' => sub {
+	tests 'it was exported' => sub {
 		my $e = do {
 			local $@;
 			eval "package Local::ABC8; use $CLASS;";
