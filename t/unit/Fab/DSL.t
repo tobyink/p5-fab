@@ -162,12 +162,16 @@ describe 'method `_generate_echo`' => sub {
 describe 'method `_generate_this`' => sub {
 	tests 'call method' => generator_tests(
 		this => '',
+		[ 123 ],
+		[],
 	);
 };
 
 describe 'method `_generate_stash`' => sub {
 	tests 'call method' => generator_tests(
 		stash => '',
+		[ 123 ],
+		[],
 	);
 };
 
