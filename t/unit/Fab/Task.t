@@ -141,7 +141,46 @@ describe "method `fabricate`" => sub {
 };
 
 describe "method `already_fabricated`" => sub {
-	tests 'TODO' => sub { pass; };
+	
+	my ( @GAF_args, $GAF_response, $expected_response );
+	
+	my $ctx = mock( {}, set => [
+		get_already_fabricated => sub {
+			shift; @GAF_args = @_;
+			return $GAF_response;
+		},
+	] );
+	
+	before_case 'init case' => sub { @GAF_args = (); };
+	
+	case 'when context claims task was already fabricated' => sub {
+		$GAF_response      = 1;
+		$expected_response = T();
+	};
+	
+	case 'when context claims task was not already fabricated' => sub {
+		$GAF_response      = 0;
+		$expected_response = F();
+	};
+	
+	tests 'it works' => sub {
+		
+		my $task = $CLASS->new(
+			name      => 'TestForAF',
+			blueprint => mock( {}, set => [ isa => sub { 1 } ] ),
+		);
+		my $response = $task->already_fabricated( $ctx );
+		
+		is(
+			\@GAF_args,
+			array {
+				item number $task->id;
+				end;
+			},
+			'$ctx->get_already_fabricated was passed the task ID and nothing else',
+		);
+		is( $response, $expected_response, 'got expected response' );
+	};
 };
 
 describe "method `satisfy_prerequisites`" => sub {
@@ -153,7 +192,18 @@ describe "method `run_steps`" => sub {
 };
 
 describe "method `check_postrequisites`" => sub {
-	tests 'TODO' => sub { pass; };
+	
+	tests "it doesn't die" => sub {
+		
+		my $task = $CLASS->new(
+			name      => 'TestForPostReq',
+			blueprint => mock( {}, set => [ isa => sub { 1 } ] ),
+		);
+		
+		$task->check_postrequisites( mock( {} ) );
+		
+		pass 'lived';
+	};
 };
 
 done_testing;
