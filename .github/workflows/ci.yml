@@ -138,7 +138,7 @@ jobs:
         run: cover -delete
       - name: Test suite
         working-directory: ./build/
-        run: gha-prove -b -r t
+        run: gha-prove -b -r -v t
         env:
           AUTHOR_TESTING: ${{ matrix.coverage }}
       - name: Coveralls.io report
