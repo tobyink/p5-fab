@@ -24,7 +24,7 @@ use Test2::Tools::Spec;
 
 describe 'method `_make_inc_absolute`' => sub {
 	
-	tests 'call method' => sub {
+	tests 'it works' => sub {
 		
 		push @INC, 'this-directory-does-not-exist', \'some-reference';
 		$CLASS->_make_inc_absolute;
@@ -36,12 +36,14 @@ describe 'method `_make_inc_absolute`' => sub {
 
 describe 'method `import`' => sub {
 	
-	tests 'call method' => sub {
+	tests 'it works' => sub {
 		
 		my $tmppkg = 'Local::ABC123';
 		my $code = qq{
 			package $tmppkg;
-			use $CLASS dsl => [ -default, -no_syntax_hack ];
+			use $CLASS
+				no_chdir => 1,
+				dsl      => [ -default, -no_syntax_hack ];
 			1;
 		};
 		ok( eval($code), 'use Fab' );
