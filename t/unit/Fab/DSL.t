@@ -30,7 +30,7 @@ describe "package `$CLASS`" => sub {
 	};
 };
 
-describe 'package variable @EXPORT' => sub {
+describe 'package variable `@EXPORT`' => sub {
 	
 	tests 'it lists correct functions' => sub {
 		
