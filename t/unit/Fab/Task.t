@@ -22,6 +22,7 @@ the same terms as the Perl 5 programming language system itself.
 use Test2::V0 -target => 'Fab::Task';
 use Test2::Tools::Spec;
 use Path::Tiny;
+use Data::Dumper;
 
 describe "class `$CLASS`" => sub {
 	
@@ -137,7 +138,116 @@ describe "method `this`" => sub {
 };
 
 describe "method `fabricate`" => sub {
-	tests 'TODO' => sub { pass; };
+	
+	my ( $already, @actions, $expected );
+	
+	before_case 'init case' => sub { @actions = (); };
+	
+	case 'when task thinks it has already been fabricated' => sub {
+		$already = 1;
+		$expected = array {
+			item array {
+				item 'already_fabricated';
+				item object {};
+				end;
+			};
+			item array {
+				item '$ctx';
+				item 'set_already_fabricated';
+				item D();
+				item T();
+				end;
+			};
+			end;
+		};
+	};
+	
+	case 'when task thinks it has not already been fabricated' => sub {
+		$already = 0;
+		$expected = array {
+			item array {
+				item 'already_fabricated';
+				item object {};
+				end;
+			};
+			item array {
+				item '$ctx';
+				item 'set_already_fabricated';
+				item D();
+				item T();
+				end;
+			};
+			item array {
+				item '$ctx';
+				item 'log';
+				item 'info';
+				item string 'Task: "%s"';
+				item string 'TestForFabricate';
+				end;
+			};
+			item array {
+				item 'satisfy_prerequisites';
+				item object {};
+				end;
+			};
+			item array {
+				item 'run_steps';
+				item object {};
+				end;
+			};
+			item array {
+				item 'check_postrequisites';
+				item object {};
+				end;
+			};
+			end;
+		};
+	};
+	
+	tests 'it works' => sub {
+		
+		my $task = $CLASS->new(
+			name      => 'TestForFabricate',
+			blueprint => mock( {}, set => [ isa => sub { 1 } ] ),
+		);
+		
+		my $guard = mock( $task, set => [
+			already_fabricated => sub {
+				shift;
+				push @actions, [ already_fabricated => @_ ];
+				return $already;
+			},
+			satisfy_prerequisites => sub {
+				shift;
+				push @actions, [ satisfy_prerequisites => @_ ];
+			},
+			run_steps => sub {
+				shift;
+				push @actions, [ run_steps => @_ ];
+			},
+			check_postrequisites => sub {
+				shift;
+				push @actions, [ check_postrequisites => @_ ];
+			},
+		] );
+		
+		my $ctx = mock( {}, set => [
+			set_already_fabricated => sub {
+				shift;
+				push @actions, [ '$ctx', set_already_fabricated => @_ ];
+			},
+			log => sub {
+				shift;
+				push @actions, [ '$ctx', log => @_ ];
+			},
+		] );
+		
+		ok lives {
+			$task->fabricate( $ctx );
+		};
+		is( \@actions, $expected, 'fabricate called things in the expected order' )
+			or diag Dumper( \@actions );
+	};
 };
 
 describe "method `already_fabricated`" => sub {
@@ -200,9 +310,9 @@ describe "method `check_postrequisites`" => sub {
 			blueprint => mock( {}, set => [ isa => sub { 1 } ] ),
 		);
 		
-		$task->check_postrequisites( mock( {} ) );
-		
-		pass 'lived';
+		ok lives {
+			$task->check_postrequisites( mock( {} ) );
+		};
 	};
 };
 
