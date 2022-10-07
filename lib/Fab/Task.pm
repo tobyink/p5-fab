@@ -6,7 +6,6 @@ our $VERSION   = '0.000_001';
 use Fab::Mite -all;
 use Fab::Features;
 
-use Fab::Exception::TaskFailed;
 use Fab::Exception::PrerequisiteFailed;
 
 param definition_context => (
@@ -87,6 +86,7 @@ sub expand_requirements ( $self, $context, $already={} ) {
 				);
 			}
 			else {
+				# XXX: _handle_prerequisite_failure???
 				$context->log(
 					error => 'Task "%s" needs "%s" but it does not exist and there is no task to create it',
 					$self->name, $r,
@@ -127,43 +127,57 @@ sub already_fabricated ( $self, $context ) {
 
 sub satisfy_prerequisites ( $self, $context ) {
 	
-	try {
-		for my $r ( $self->all_requirements ) {
+	for my $r ( $self->all_requirements ) {
+		try {
 			$context->fabricate( $r );
 		}
-	}
-	catch ( $e ) {
-		if ( blessed( $e ) and $e->isa( 'Fab::Exception::TaskFailed' ) ) {
-			'Fab::Exception::PrerequisiteFailed'->throw(
-				task => $self,
-				prerequisite => $e->task,
-				original_exception => $e,
-			);
-		}
-		else {
-			$e->rethrow;
+		catch ( $e ) {
+			if ( blessed( $e ) and $e->isa( 'Fab::Exception::TaskFailed' ) ) {
+				$self->_handle_prerequisite_failure( $context, $e );
+			}
+			else {
+				$e->rethrow;
+			}
 		}
 	}
 }
 
+sub _handle_prerequisite_failure ( $self, $context, $orig ) {
+	
+	require Fab::Exception::PrerequisiteFailed;
+	
+	'Fab::Exception::PrerequisiteFailed'->throw(
+		task => $self,
+		prerequisite => $orig->task,
+		original_exception => $orig,
+	);
+}
+
 sub run_steps ( $self, $context ) {
 	
-	try {
-		for my $s ( $self->all_steps ) {
+	for my $s ( $self->all_steps ) {
+		try {
 			$s->execute( $context );
 		}
-	}
-	catch ( $e ) {
-		if ( blessed( $e ) and $e->isa( 'Fab::Exception::StepFailed' ) ) {
-			'Fab::Exception::TaskFailed'->throw(
-				task => $self,
-				original_exception => $e,
-			);
-		}
-		else {
-			$e->rethrow;
+		catch ( $e ) {
+			if ( blessed( $e ) and $e->isa( 'Fab::Exception::StepFailed' ) ) {
+				$self->_handle_step_failure( $context, $e );
+			}
+			else {
+				$e->rethrow;
+			}
 		}
 	}
+}
+
+sub _handle_step_failure ( $self, $context, $orig ) {
+
+	require Fab::Exception::TaskFailed;
+	
+	'Fab::Exception::TaskFailed'->throw(
+		task => $self,
+		original_exception => $orig,
+	);
 }
 
 sub check_postrequisites ( $self, $context ) {

@@ -297,7 +297,15 @@ describe "method `satisfy_prerequisites`" => sub {
 	tests 'TODO' => sub { pass; };
 };
 
+describe "method `_handle_prerequisite_failure`" => sub {
+	tests 'TODO' => sub { pass; };
+};
+
 describe "method `run_steps`" => sub {
+	tests 'TODO' => sub { pass; };
+};
+
+describe "method `_handle_step_failure`" => sub {
 	tests 'TODO' => sub { pass; };
 };
 
