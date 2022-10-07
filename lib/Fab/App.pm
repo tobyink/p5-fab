@@ -6,7 +6,7 @@ our $VERSION   = '0.000_001';
 use Fab::Mite -all;
 use Fab::Features;
 
-sub run ( $self ) {
+sub _find_fab_pl ( $self ) {
 	
 	my $fab_pl;
 	my $dir = path( '.' );
@@ -20,8 +20,15 @@ sub run ( $self ) {
 	
 	$fab_pl or croak 'Could not find Fab.pl in any parent directory';
 	
+	return $fab_pl;
+}
+
+sub run ( $self ) {
+	
+	my $fab_pl = $self->_find_fab_pl;
+	
 	package main;
-	$Fab::CHDIR_TARGET = $dir;
+	$Fab::CHDIR_TARGET = $fab_pl->parent;
 	do( $fab_pl );
 	return 0;
 }

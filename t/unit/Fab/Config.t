@@ -23,6 +23,7 @@ BEGIN { $Fab::Config::_NO_AUTOLOAD_FILE = 1 };
 
 use Test2::V0 -target => 'Fab::Config';
 use Test2::Tools::Spec;
+use Path::Tiny;
 
 describe "package `$CLASS`" => sub {
 	
