@@ -118,7 +118,260 @@ describe "method `add_requirement`" => sub {
 };
 
 describe "method `expand_requirements`" => sub {
-	tests 'TODO' => sub { pass; };
+	
+	my ( $blueprint, $task, $expected, $expected_log, $finder_count, $expected_finder_count );
+	before_case 'init case' => sub {
+		( $blueprint, $task, $expected, $expected_log ) = ( undef ) x 4;
+		$expected_finder_count = $finder_count = 0;
+	};
+	
+	case 'for task with no requirements' => sub {
+		$blueprint = mock( {}, set => [
+			isa        => sub { 1 },
+			find_tasks => sub { fail 'should not be called!'; },
+		] );
+		$task = $CLASS->new(
+			name      => 'TestForER01',
+			blueprint => $blueprint,
+		);
+		$expected      = array { end; };
+		$expected_log  = array { end; };
+	};
+	
+	case 'for task with required file which exists but with no recipe in blueprint' => sub {
+		$blueprint = mock( {}, set => [
+			isa        => sub { 1 },
+			find_tasks => sub {
+				$finder_count++;
+				fail 'wrong args to finder!' unless $_[1] eq 't/Fab.pl';
+				return;
+			},
+		] );
+		$task = $CLASS->new(
+			name      => 'TestForER02',
+			blueprint => $blueprint,
+		);
+		$task->add_requirement( 't/Fab.pl' );
+		$expected      = array {
+			item object {
+				prop isa   => 'Fab::Task::Product';
+				call name  => 't/Fab.pl';
+				call steps => array { end; };
+			};
+			end;
+		};
+		$expected_log  = array { end; };
+		$expected_finder_count = 1;
+	};
+	
+	case 'for task with required file which exists and has a recipe in blueprint' => sub {
+		my $prereq;
+		$blueprint = mock( {}, set => [
+			isa        => sub { 1 },
+			find_tasks => sub {
+				$finder_count++;
+				fail 'wrong args to finder!' unless $_[1] eq 't/Fab.pl';
+				return $prereq;
+			},
+		] );
+		$task = $CLASS->new(
+			name      => 'TestForER03',
+			blueprint => $blueprint,
+		);
+		$prereq = $CLASS->new(
+			name      => 't/Fab.pl',
+			blueprint => $blueprint,
+		);
+		$task->add_requirement( 't/Fab.pl' );
+		$expected      = array {
+			item exact_ref( $prereq );
+			end;
+		};
+		$expected_log  = array { end; };
+		$expected_finder_count = 1;
+	};
+	
+	case 'for task with required file which exists and has a recipe in blueprint, found via wildcard' => sub {
+		my $prereq;
+		$blueprint = mock( {}, set => [
+			isa        => sub { 1 },
+			find_tasks => sub {
+				$finder_count++;
+				fail 'wrong args to finder!' unless $_[1] eq 't/*.*';
+				return $prereq;
+			},
+		] );
+		$task = $CLASS->new(
+			name      => 'TestForER04',
+			blueprint => $blueprint,
+		);
+		$prereq = $CLASS->new(
+			name      => 't/Fab.pl',
+			blueprint => $blueprint,
+		);
+		$task->add_requirement( 't/*.*' );
+		$expected      = array {
+			item exact_ref( $prereq );
+			end;
+		};
+		$expected_log  = array { end; };
+		$expected_finder_count = 1;
+	};
+	
+	case 'for task with required file which does not exist and no recipe in blueprint' => sub {
+		$blueprint = mock( {}, set => [
+			isa        => sub { 1 },
+			find_tasks => sub {
+				$finder_count++;
+				fail 'wrong args to finder!' unless $_[1] eq 't/not-existing.txt';
+				return;
+			},
+		] );
+		$task = $CLASS->new(
+			name      => 'TestForER05',
+			blueprint => $blueprint,
+		);
+		$task->add_requirement( 't/not-existing.txt' );
+		$expected = array { end; };
+		$expected_log  = array {
+			item array {
+				item 'error';
+				item match( qr/does not exist/ );
+				etc;
+			};
+			end;
+		};
+		$expected_finder_count = 1;
+	};
+	
+	case 'for task with required file which does not exist and multiple recipes in blueprint' => sub {
+		my ( $prereq1, $prereq2 );
+		$blueprint = mock( {}, set => [
+			isa        => sub { 1 },
+			find_tasks => sub {
+				$finder_count++;
+				fail 'wrong args to finder!' unless $_[1] eq 't/*.not-exist';
+				return ( $prereq1, $prereq2 );
+			},
+		] );
+		$task = $CLASS->new(
+			name      => 'TestForER06',
+			blueprint => $blueprint,
+		);
+		$prereq1 = $CLASS->new(
+			name      => 't/123.not-exist',
+			blueprint => $blueprint,
+		);
+		$prereq2 = $CLASS->new(
+			name      => 't/456.not-exist',
+			blueprint => $blueprint,
+		);
+		$task->add_requirement( 't/*.not-exist' );
+		$expected      = bag {
+			item exact_ref( $prereq1 );
+			item exact_ref( $prereq2 );
+			end;
+		};
+		$expected_log  = array { end; };
+		$expected_finder_count = 1;
+	};
+	
+	case 'for task with recursive requirements' => sub {
+		my ( $prereq1, $prereq2 );
+		$blueprint = mock( {}, set => [
+			isa        => sub { 1 },
+			find_tasks => sub {
+				$finder_count++;
+				if ( $_[1] eq 't/123.not-exist' ) {
+					return $prereq1;
+				}
+				if ( $_[1] eq 't/456.not-exist' ) {
+					return $prereq2;
+				}
+				fail 'wrong args to finder!';
+			},
+		] );
+		$task = $CLASS->new(
+			name      => 'TestForER07',
+			blueprint => $blueprint,
+		);
+		$prereq1 = $CLASS->new(
+			name      => 't/123.not-exist',
+			blueprint => $blueprint,
+		);
+		$prereq2 = $CLASS->new(
+			name      => 't/456.not-exist',
+			blueprint => $blueprint,
+		);
+		$task->add_requirement( 't/123.not-exist' );
+		$prereq1->add_requirement( 't/456.not-exist' );
+		$expected      = bag {
+			item exact_ref( $prereq1 );
+			item exact_ref( $prereq2 );
+			end;
+		};
+		$expected_log  = array { end; };
+		$expected_finder_count = 2;
+	};
+	
+	case 'for task with looping requirements' => sub {
+		my ( $prereq1, $prereq2 );
+		$blueprint = mock( {}, set => [
+			isa        => sub { 1 },
+			find_tasks => sub {
+				$finder_count++;
+				if ( $_[1] eq 't/123.not-exist' ) {
+					return $prereq1;
+				}
+				if ( $_[1] eq 't/456.not-exist' ) {
+					return $prereq2;
+				}
+				if ( $_[1] eq 'TestForER08' ) {
+					return $task;
+				}
+				fail 'wrong args to finder!';
+			},
+		] );
+		$task = $CLASS->new(
+			name      => 'TestForER08',
+			blueprint => $blueprint,
+		);
+		$prereq1 = $CLASS->new(
+			name      => 't/123.not-exist',
+			blueprint => $blueprint,
+		);
+		$prereq2 = $CLASS->new(
+			name      => 't/456.not-exist',
+			blueprint => $blueprint,
+		);
+		$task->add_requirement( 't/123.not-exist' );
+		$prereq1->add_requirement( 't/456.not-exist' );
+		$prereq2->add_requirement( 'TestForER08' );
+		$expected      = bag {
+			item exact_ref( $prereq1 );
+			item exact_ref( $prereq2 );
+			end;
+		};
+		$expected_log  = array { end; };
+		$expected_finder_count = D();
+	};
+	
+	tests 'it works' => sub {
+		
+		my @log;
+		my $ctx = mock( {}, set => [
+			log => sub { shift; push @log, [ @_ ]; },
+		] );
+		
+		my @expanded = $task->expand_requirements( $ctx );
+		
+		is( \@expanded, $expected, 'expected results' )
+			or diag Dumper( \@expanded );
+		is( \@log, $expected_log, 'expected log' )
+			or diag Dumper( \@log );
+		is( $finder_count, $expected_finder_count, 'find_tasks called expected number of times' )
+			or diag "FINDER COUNT: $finder_count";
+	};
 };
 
 describe "method `this`" => sub {
