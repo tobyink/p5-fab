@@ -547,11 +547,142 @@ describe "method `already_fabricated`" => sub {
 };
 
 describe "method `satisfy_prerequisites`" => sub {
-	tests 'TODO' => sub { pass; };
+	
+	my ( @to_fabricate, @fabricated, $die_on );
+	my $expected_fabricated;
+	my $expected_exception;
+	
+	my $blueprint = mock( {}, set => [ isa => sub { 1 } ] );
+	my $throw_exception;
+	
+	before_case 'init case' => sub {
+		$die_on = qr/NOTHINGCALLEDTHIS/;
+		( @to_fabricate, @fabricated ) = ();
+		$expected_exception = undef;
+	};
+	
+	case 'no requirements' => sub {
+		$expected_fabricated = array { end; };
+	};
+	
+	case 'one requirement' => sub {
+		@to_fabricate = (
+			$CLASS->new( name => 'abc', blueprint => $blueprint ),
+		);
+		$expected_fabricated = array { item 'abc'; end; };
+	};
+	
+	case 'two requirements' => sub {
+		@to_fabricate = (
+			$CLASS->new( name => 'abc', blueprint => $blueprint ),
+			$CLASS->new( name => 'def', blueprint => $blueprint ),
+		);
+		$expected_fabricated = array { item 'abc'; item 'def'; end; };
+	};
+	
+	case 'two requirements; first fails' => sub {
+		@to_fabricate = (
+			$CLASS->new( name => 'abc', blueprint => $blueprint ),
+			$CLASS->new( name => 'def', blueprint => $blueprint ),
+		);
+		$die_on = qr/abc/;
+		$throw_exception = mock( {}, set => [
+			isa => sub { 1 },
+			task => sub { $to_fabricate[0] },
+			to_string => sub { 'AAAA' },
+		] );
+		
+		$expected_fabricated = array { end; };
+		$expected_exception  = object {
+			prop isa                 => 'Fab::Exception::PrerequisiteFailed';
+			call message             => 'Task "TestForSP" did not have prerequisite "abc"';
+			call original_exception  => exact_ref( $throw_exception );
+			call task                => object {};
+		};
+	};
+	
+	case 'two requirements; second fails' => sub {
+		@to_fabricate = (
+			$CLASS->new( name => 'abc', blueprint => $blueprint ),
+			$CLASS->new( name => 'def', blueprint => $blueprint ),
+		);
+		$die_on = qr/def/;
+		$throw_exception = mock( {}, set => [
+			isa => sub { 1 },
+			task => sub { $to_fabricate[1] },
+			to_string => sub { 'AAAA' },
+		] );
+		
+		$expected_fabricated = array { item 'abc'; end; };
+		$expected_exception  = object {
+			prop isa                 => 'Fab::Exception::PrerequisiteFailed';
+			call message             => 'Task "TestForSP" did not have prerequisite "def"';
+			call original_exception  => exact_ref( $throw_exception );
+			call task                => object {};
+		};
+	};
+	
+	tests 'it works' => sub {
+		
+		my $task = $CLASS->new(
+			name      => 'TestForSP',
+			blueprint => $blueprint,
+		);
+		my $guard = mock( $task, set => [
+			all_requirements => sub { @to_fabricate },
+		] );
+		my $ctx = mock( {}, set => [
+			fabricate => sub {
+				my $req = pop;
+				if ( $req->name =~ $die_on ) {
+					die( $throw_exception );
+				}
+				push @fabricated, $req->name;
+			},
+		] );
+		
+		my $e = dies {
+			$task->satisfy_prerequisites( $ctx );
+		};
+		is( \@fabricated, $expected_fabricated, 'expected prereqs fabricated' )
+			or diag Dumper( \@fabricated );
+		is( $e, $expected_exception, 'expected exception' )
+			or diag Dumper( $e );
+	};
 };
 
 describe "method `_handle_prerequisite_failure`" => sub {
-	tests 'TODO' => sub { pass; };
+	
+	tests 'it works' => sub {
+		
+		my $blueprint = mock( {}, set => [ isa => sub { 1 } ] );
+		my $context   = mock( {}, set => [ isa => sub { 1 } ] );
+		my $task = $CLASS->new(
+			name      => 'TestForHPF',
+			blueprint => $blueprint,
+		);
+		my $other = $CLASS->new(
+			name      => 'Other',
+			blueprint => $blueprint,
+		);
+		my $orig_e = mock( {}, set => [
+			task => sub { $other },
+		] );
+		
+		my $e = dies {
+			$task->_handle_prerequisite_failure( $context, $orig_e );
+		};
+		
+		is(
+			$e,
+			object {
+				prop isa                 => 'Fab::Exception::PrerequisiteFailed';
+				call task                => exact_ref( $task );
+				call prerequisite        => exact_ref( $other );
+				call original_exception  => exact_ref( $orig_e );
+			},
+		);
+	};
 };
 
 describe "method `run_steps`" => sub {
@@ -559,7 +690,30 @@ describe "method `run_steps`" => sub {
 };
 
 describe "method `_handle_step_failure`" => sub {
-	tests 'TODO' => sub { pass; };
+	
+	tests 'it works' => sub {
+		
+		my $blueprint = mock( {}, set => [ isa => sub { 1 } ] );
+		my $context   = mock( {}, set => [ isa => sub { 1 } ] );
+		my $task = $CLASS->new(
+			name      => 'TestForHSF',
+			blueprint => $blueprint,
+		);
+		my $orig_e = mock( {}, set => [] );
+		
+		my $e = dies {
+			$task->_handle_step_failure( $context, $orig_e );
+		};
+		
+		is(
+			$e,
+			object {
+				prop isa                 => 'Fab::Exception::TaskFailed';
+				call task                => exact_ref( $task );
+				call original_exception  => exact_ref( $orig_e );
+			},
+		);
+	};
 };
 
 describe "method `check_postrequisites`" => sub {
