@@ -8,9 +8,6 @@ use Fab::Features;
 
 extends 'Fab::Step';
 
-use Fab::Exception::StepFailed ();
-use IPC::Run ();
-
 param command => (
 	required    => true,
 	isa         => 'Str|Path::Tiny|CodeRef',
@@ -62,20 +59,29 @@ sub _execute_coderef ( $self, $context, $command, $args ) {
 		$command->( $args->@* );
 	}
 	catch ( $e ) {
-		'Fab::Exception::StepFailed'->throw(
-			error => $e,
-			step  => $self,
-			original_exception => $e,
-		);
-	};
+		$self->_handle_coderef_failure( $context, $e );
+	}
 	return;
 }
+
+sub _handle_coderef_failure ( $self, $context, $orig ) {
 	
+	require Fab::Exception::StepFailed;
+	
+	'Fab::Exception::StepFailed'->throw(
+		error => $orig,
+		step  => $self,
+		original_exception => $orig,
+	);
+}
+
 sub _execute_binary ( $self, $context, $command, $args ) {
 	
 	if ( blessed $command and $command->isa( 'Path::Tiny' ) ) {
 		$command = $command->stringify;
 	}
+	
+	require IPC::Run;
 	
 	my $in  = $context->get_setting( 'stdin'  ) // \*STDIN;
 	my $out = $context->get_setting( 'stdout' ) // \*STDOUT;
@@ -90,14 +96,20 @@ sub _execute_binary ( $self, $context, $command, $args ) {
 		'2>' => $err,
 	);
 	
-	if ( not $ok ) {
-		'Fab::Exception::StepFailed'->throw(
-			error => "process failed",
-			step  => $self,
-		);
-	}
+	$ok or $self->_handle_binary_failure( $context );
 	
 	return;
 }
+
+sub _handle_binary_failure ( $self, $context ) {
+	
+	require Fab::Exception::StepFailed;
+	
+	'Fab::Exception::StepFailed'->throw(
+		error => 'process failed',
+		step  => $self,
+	);
+}
+
 
 1;
