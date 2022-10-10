@@ -622,7 +622,7 @@ describe "method `satisfy_prerequisites`" => sub {
 		};
 	};
 	
-	case 'two requirements; second throws unexpected exception' => sub {
+	case 'two requirements; second throws unexpected string exception' => sub {
 		@to_fabricate = (
 			$CLASS->new( name => 'abc', blueprint => $blueprint ),
 			$CLASS->new( name => 'def', blueprint => $blueprint ),
@@ -632,6 +632,22 @@ describe "method `satisfy_prerequisites`" => sub {
 		
 		$expected_fabricated = array { item 'abc'; end; };
 		$expected_exception  = match( qr/^string exception/ );
+	};
+	
+	case 'two requirements; second throws unexpected Fab::Exception' => sub {
+		@to_fabricate = (
+			$CLASS->new( name => 'abc', blueprint => $blueprint ),
+			$CLASS->new( name => 'def', blueprint => $blueprint ),
+		);
+		$die_on = qr/def/;
+		$throw_exception = mock( {}, set => [
+			isa => sub { 0 },
+			DOES => sub { 1 },
+			rethrow => sub { die( shift ) },
+		] );
+		
+		$expected_fabricated = array { item 'abc'; end; };
+		$expected_exception  = exact_ref( $throw_exception );
 	};
 	
 	tests 'it works' => sub {

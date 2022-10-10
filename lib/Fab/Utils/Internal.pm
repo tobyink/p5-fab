@@ -11,7 +11,7 @@ our @EXPORT_OK = qw( rethrow );
 sub rethrow {
 	my ( $exception ) = @_;
 	
-	if ( Scalar::Util::blessed($exception) and $exception->isa( 'Fab::Exception' ) ) {
+	if ( Scalar::Util::blessed($exception) and $exception->DOES( 'Fab::Exception' ) ) {
 		my $next = $exception->can( 'rethrow' );
 		@_ = $exception;
 		goto $next;
