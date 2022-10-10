@@ -5,6 +5,7 @@ our $VERSION   = '0.000_001';
 
 use Fab::Mite -all;
 use Fab::Features;
+use Fab::Utils::Internal qw( rethrow );
 
 use Fab::Exception::PrerequisiteFailed;
 
@@ -136,7 +137,7 @@ sub satisfy_prerequisites ( $self, $context ) {
 				$self->_handle_prerequisite_failure( $context, $e );
 			}
 			else {
-				$e->rethrow;
+				rethrow( $e );
 			}
 		}
 	}
@@ -164,7 +165,7 @@ sub run_steps ( $self, $context ) {
 				$self->_handle_step_failure( $context, $e );
 			}
 			else {
-				$e->rethrow;
+				rethrow( $e );
 			}
 		}
 	}

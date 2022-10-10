@@ -622,6 +622,18 @@ describe "method `satisfy_prerequisites`" => sub {
 		};
 	};
 	
+	case 'two requirements; second throws unexpected exception' => sub {
+		@to_fabricate = (
+			$CLASS->new( name => 'abc', blueprint => $blueprint ),
+			$CLASS->new( name => 'def', blueprint => $blueprint ),
+		);
+		$die_on = qr/def/;
+		$throw_exception = 'string exception';
+		
+		$expected_fabricated = array { item 'abc'; end; };
+		$expected_exception  = match( qr/^string exception/ );
+	};
+	
 	tests 'it works' => sub {
 		
 		my $task = $CLASS->new(
