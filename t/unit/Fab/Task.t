@@ -714,7 +714,124 @@ describe "method `_handle_prerequisite_failure`" => sub {
 };
 
 describe "method `run_steps`" => sub {
-	tests 'TODO' => sub { pass; };
+	
+	my ( @steps, $got, $expected, $expected_e );
+	
+	before_case 'init case' => sub {
+		@steps      = ();
+		$got        = [];
+		$expected   = array { end; };
+		$expected_e = undef;
+	};
+	
+	case 'no steps' => sub {
+		$expected = array { end; };
+	};
+	
+	case 'one step' => sub {
+		push @steps, mock( {}, set => [
+			isa     => sub { $_[1] eq 'Fab::Step' },
+			execute => sub {
+				my ( $self, $ctx ) = @_;
+				push @$got, 'STEP1';
+				return;
+			},
+		] );
+		$expected = array { item 'STEP1'; end; };
+	};
+	
+	case 'two steps' => sub {
+		push @steps, mock( {}, set => [
+			isa     => sub { $_[1] eq 'Fab::Step' },
+			execute => sub {
+				my ( $self, $ctx ) = @_;
+				push @$got, 'STEP1';
+				return;
+			},
+		] );
+		push @steps, mock( {}, set => [
+			isa     => sub { $_[1] eq 'Fab::Step' },
+			execute => sub {
+				my ( $self, $ctx ) = @_;
+				push @$got, 'STEP2';
+				return;
+			},
+		] );
+		$expected = array { item 'STEP1'; item 'STEP2'; end; };
+	};
+	
+	case 'two steps, first fails' => sub {
+		push @steps, mock( {}, set => [
+			isa     => sub { $_[1] eq 'Fab::Step' },
+			execute => sub {
+				my ( $self, $ctx ) = @_;
+				die( mock( {}, set => [
+					isa => sub { $_[1] eq 'Fab::Exception::StepFailed' },
+				] ) );
+				return;
+			},
+		] );
+		push @steps, mock( {}, set => [
+			isa     => sub { $_[1] eq 'Fab::Step' },
+			execute => sub {
+				my ( $self, $ctx ) = @_;
+				push @$got, 'STEP2';
+				return;
+			},
+		] );
+		$expected = array { end; };
+		$expected_e = object {
+			prop isa => 'Fab::Exception::TaskFailed';
+		};
+	};
+	
+	case 'two steps, first dies weirdly' => sub {
+		push @steps, mock( {}, set => [
+			isa     => sub { $_[1] eq 'Fab::Step' },
+			execute => sub {
+				my ( $self, $ctx ) = @_;
+				die( 'huh' );
+				return;
+			},
+		] );
+		push @steps, mock( {}, set => [
+			isa     => sub { $_[1] eq 'Fab::Step' },
+			execute => sub {
+				my ( $self, $ctx ) = @_;
+				push @$got, 'STEP2';
+				return;
+			},
+		] );
+		$expected = array { end; };
+		$expected_e = match( qr/\Ahuh/ );
+	};
+	
+	tests 'it works' => sub {
+		
+		my $blueprint = mock( {}, set => [ isa => sub { $_[1] eq 'Fab::Blueprint' } ] );
+		my $context   = mock( {}, set => [ isa => sub { $_[1] eq 'Fab::Context'   } ] );
+		my $task = $CLASS->new(
+			name      => 'TestForRS',
+			blueprint => $blueprint,
+		);
+		$task->add_step( $_ ) for @steps;
+		
+		my $e = dies {
+			$task->run_steps( $context );
+		};
+		
+		is(
+			$got,
+			$expected,
+			'expected outcome',
+		);
+		
+		is(
+			$e,
+			$expected_e,
+			defined($expected_e) ? 'expected exception' : 'no exception',
+		);
+	};
 };
 
 describe "method `_handle_step_failure`" => sub {
