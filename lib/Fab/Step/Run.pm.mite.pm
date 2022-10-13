@@ -119,7 +119,7 @@
           if ref $self->{"task"};
 
         # Attribute command (type: Str|InstanceOf["Path::Tiny"]|CodeRef)
-        # param declaration, file lib/Fab/Step/Run.pm, line 14
+        # param declaration, file lib/Fab/Step/Run.pm, line 11
         croak "Missing key in constructor: command"
           unless exists $args->{"command"};
         do {
@@ -151,7 +151,7 @@
         $self->{"command"} = $args->{"command"};
 
         # Attribute args (type: ArrayRef)
-        # param declaration, file lib/Fab/Step/Run.pm, line 19
+        # param declaration, file lib/Fab/Step/Run.pm, line 16
         do {
             my $value = exists( $args->{"args"} ) ? $args->{"args"} : [];
             ( ref($value) eq 'ARRAY' )
@@ -177,7 +177,7 @@
       && eval { require Class::XSAccessor; Class::XSAccessor->VERSION("1.19") };
 
     # Accessors for args
-    # param declaration, file lib/Fab/Step/Run.pm, line 19
+    # param declaration, file lib/Fab/Step/Run.pm, line 16
     if ($__XS) {
         Class::XSAccessor->import(
             chained   => 1,
@@ -192,7 +192,7 @@
     }
 
     # Accessors for command
-    # param declaration, file lib/Fab/Step/Run.pm, line 14
+    # param declaration, file lib/Fab/Step/Run.pm, line 11
     if ($__XS) {
         Class::XSAccessor->import(
             chained   => 1,

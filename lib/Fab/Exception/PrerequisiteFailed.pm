@@ -8,12 +8,7 @@ use Fab::Features;
 
 use overload q[""] => 'to_string', fallback => 1;
 
-with 'Fab::Exception';
-
-param task => (
-	is          => ro,
-	required    => true,
-);
+extends 'Fab::Exception::TaskFailed';
 
 param prerequisite => (
 	is          => ro,

@@ -53,24 +53,12 @@
         *true    = \&Fab::Mite::true;
     }
 
-    # Gather metadata for constructor and destructor
-    sub __META__ {
-        no strict 'refs';
-        my $class = shift;
-        $class = ref($class) || $class;
-        my $linear_isa = mro::get_linear_isa($class);
-        return {
-            BUILD => [
-                map { ( *{$_}{CODE} ) ? ( *{$_}{CODE} ) : () }
-                map { "$_\::BUILD" } reverse @$linear_isa
-            ],
-            DEMOLISH => [
-                map   { ( *{$_}{CODE} ) ? ( *{$_}{CODE} ) : () }
-                  map { "$_\::DEMOLISH" } @$linear_isa
-            ],
-            HAS_BUILDARGS        => $class->can('BUILDARGS'),
-            HAS_FOREIGNBUILDARGS => $class->can('FOREIGNBUILDARGS'),
-        };
+    BEGIN {
+        require Fab::Exception::TaskFailed;
+
+        use mro 'c3';
+        our @ISA;
+        push @ISA, "Fab::Exception::TaskFailed";
     }
 
     # Standard Moose/Moo-style constructor
@@ -84,13 +72,13 @@
           : { ( @_ == 1 ) ? %{ $_[0] } : @_ };
         my $no_build = delete $args->{__no_BUILD__};
 
-      # Attribute task
-      # param declaration, file lib/Fab/Exception/PrerequisiteFailed.pm, line 13
+        # Attribute task
+        # param declaration, file lib/Fab/Exception/TaskFailed.pm, line 13
         croak "Missing key in constructor: task" unless exists $args->{"task"};
         $self->{"task"} = $args->{"task"};
 
       # Attribute prerequisite
-      # param declaration, file lib/Fab/Exception/PrerequisiteFailed.pm, line 18
+      # param declaration, file lib/Fab/Exception/PrerequisiteFailed.pm, line 13
         croak "Missing key in constructor: prerequisite"
           unless exists $args->{"prerequisite"};
         $self->{"prerequisite"} = $args->{"prerequisite"};
@@ -131,91 +119,11 @@
         return $self;
     }
 
-    # Used by constructor to call BUILD methods
-    sub BUILDALL {
-        my $class = ref( $_[0] );
-        my $meta  = ( $Mite::META{$class} ||= $class->__META__ );
-        $_->(@_) for @{ $meta->{BUILD} || [] };
-    }
-
-    # Destructor should call DEMOLISH methods
-    sub DESTROY {
-        my $self  = shift;
-        my $class = ref($self) || $self;
-        my $meta  = ( $Mite::META{$class} ||= $class->__META__ );
-        my $in_global_destruction =
-          defined ${^GLOBAL_PHASE}
-          ? ${^GLOBAL_PHASE} eq 'DESTRUCT'
-          : Devel::GlobalDestruction::in_global_destruction();
-        for my $demolisher ( @{ $meta->{DEMOLISH} || [] } ) {
-            my $e = do {
-                local ( $?, $@ );
-                eval { $demolisher->( $self, $in_global_destruction ) };
-                $@;
-            };
-            no warnings 'misc';    # avoid (in cleanup) warnings
-            die $e if $e;          # rethrow
-        }
-        return;
-    }
-
     my $__XS = !$ENV{PERL_ONLY}
       && eval { require Class::XSAccessor; Class::XSAccessor->VERSION("1.19") };
 
-    # Accessors for message
-    # param declaration, file lib/Fab/Exception.pm, line 9
-    sub message {
-        @_ == 1 or croak('Reader "message" usage: $self->message()');
-        (
-            exists( $_[0]{"message"} ) ? $_[0]{"message"} : (
-                $_[0]{"message"} = do {
-                    my $default_value = $_[0]->_build_message;
-                    do {
-
-                        package Fab::Mite;
-                        defined($default_value) and do {
-                            ref( \$default_value ) eq 'SCALAR'
-                              or ref( \( my $val = $default_value ) ) eq
-                              'SCALAR';
-                        }
-                      }
-                      or croak( "Type check failed in default: %s should be %s",
-                        "message", "Str" );
-                    $default_value;
-                }
-            )
-        );
-    }
-
-    # Accessors for original_exception
-    # param declaration, file lib/Fab/Exception.pm, line 15
-    if ($__XS) {
-        Class::XSAccessor->import(
-            chained             => 1,
-            "exists_predicates" =>
-              { "has_original_exception" => "original_exception" },
-            "getters" => { "original_exception" => "original_exception" },
-        );
-    }
-    else {
-        *has_original_exception = sub {
-            @_ == 1
-              or croak(
-'Predicate "has_original_exception" usage: $self->has_original_exception()'
-              );
-            exists $_[0]{"original_exception"};
-        };
-        *original_exception = sub {
-            @_ == 1
-              or croak(
-                'Reader "original_exception" usage: $self->original_exception()'
-              );
-            $_[0]{"original_exception"};
-        };
-    }
-
     # Accessors for prerequisite
-    # param declaration, file lib/Fab/Exception/PrerequisiteFailed.pm, line 18
+    # param declaration, file lib/Fab/Exception/PrerequisiteFailed.pm, line 13
     if ($__XS) {
         Class::XSAccessor->import(
             chained   => 1,
@@ -228,30 +136,6 @@
               or croak('Reader "prerequisite" usage: $self->prerequisite()');
             $_[0]{"prerequisite"};
         };
-    }
-
-    # Accessors for task
-    # param declaration, file lib/Fab/Exception/PrerequisiteFailed.pm, line 13
-    if ($__XS) {
-        Class::XSAccessor->import(
-            chained   => 1,
-            "getters" => { "task" => "task" },
-        );
-    }
-    else {
-        *task = sub {
-            @_ == 1 or croak('Reader "task" usage: $self->task()');
-            $_[0]{"task"};
-        };
-    }
-
-    BEGIN {
-        require Fab::Exception;
-
-        our %DOES = (
-            "Fab::Exception::PrerequisiteFailed" => 1,
-            "Fab::Exception"                     => 1
-        );
     }
 
     # See UNIVERSAL
@@ -272,12 +156,6 @@
     sub does {
         shift->DOES(@_);
     }
-
-    # Methods from roles
-    sub context_to_string { goto \&Fab::Exception::context_to_string; }
-    sub rethrow           { goto \&Fab::Exception::rethrow; }
-    sub throw             { goto \&Fab::Exception::throw; }
-    sub to_string         { goto \&Fab::Exception::to_string; }
 
     1;
 }
