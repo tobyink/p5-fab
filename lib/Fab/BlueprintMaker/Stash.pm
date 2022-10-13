@@ -42,6 +42,7 @@ package Fab::BlueprintMaker::Stash::HASH {
 		my $path = sprintf( '%s->{%s}', $$$self, B::perlstring($key) );
 		return 'Fab::BlueprintMaker::Stash'->new( $path );
 	}
+	$INC{'Fab/BlueprintMaker/Stash/HASH.pm'} = __FILE__;
 }
 
 package Fab::BlueprintMaker::Stash::ARRAY {
@@ -54,6 +55,7 @@ package Fab::BlueprintMaker::Stash::ARRAY {
 		my $path = sprintf( '%s->[%d]', $$$self, $idx );
 		return 'Fab::BlueprintMaker::Stash'->new( $path );
 	}
+	$INC{'Fab/BlueprintMaker/Stash/ARRAY.pm'} = __FILE__;
 }
 
 1;
