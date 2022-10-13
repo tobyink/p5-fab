@@ -136,7 +136,76 @@ describe 'method `file_exists`' => sub {
 
 describe 'method `already_fabricated`' => sub {
 	
-	tests TODO => sub { pass; };
+	my ( $task, $ctx, $expected, $expected_log, @guards, @log );
+	
+	before_case 'init case' => sub {
+		$task = $ctx = $expected = $expected_log = undef;
+		@guards = ();
+		@log    = ();
+	};
+	
+	case 'when context claims task was already fabricated, and file does not exist' => sub {
+		$task = $CLASS->new(
+			name      => 'file-does-not-exist.342342001',
+			blueprint => mock( {}, set => [ isa => sub { 1 } ] ),
+		);
+		$ctx = mock( {}, set => [
+			get_already_fabricated => sub {
+				$_[1] == $task->id and return 1;
+				fail 'Unexpected task id passed to get_already_fabricated';
+			},
+		] );
+		$expected = T();
+	};
+	
+	case 'when context claims task was not already fabricated, and file does not exist' => sub {
+		$task = $CLASS->new(
+			name      => 'file-does-not-exist.342342002',
+			blueprint => mock( {}, set => [ isa => sub { 1 } ] ),
+		);
+		$ctx = mock( {}, set => [
+			get_already_fabricated => sub {
+				$_[1] == $task->id and return 0;
+				fail 'Unexpected task id passed to get_already_fabricated';
+			},
+		] );
+		$expected = F();
+	};
+	
+	case 'when context claims task was not already fabricated, but file does exist and has no prereqs' => sub {
+		my $tmp = Path::Tiny->tempfile;
+		$tmp->spew( 'xyz' );
+		push @guards, $tmp;
+		
+		$task = $CLASS->new(
+			name      => "$tmp",
+			blueprint => mock( {}, set => [ isa => sub { 1 } ] ),
+		);
+		$ctx = mock( {}, set => [
+			get_already_fabricated => sub {
+				$_[1] == $task->id and return 0;
+				fail 'Unexpected task id passed to get_already_fabricated';
+			},
+		] );
+		$expected = T();
+	};
+	
+	# case 'when context claims task was not already fabricated, but file does exist, yet has non-product prereqs which have run'
+	
+	# case 'when context claims task was not already fabricated, but file does exist, yet has non-product prereqs which have not run'
+	
+	# case 'when context claims task was not already fabricated, but file does exist, yet has product prereqs which do not exist'
+	
+	# case 'when context claims task was not already fabricated, but file does exist, yet has product prereqs which do exist and are newer than me'
+	
+	# case 'when context claims task was not already fabricated, but file does exist, yet has product prereqs which do exist and are older than me'
+	
+	tests 'it works' => sub {
+		
+		my $got = $task->already_fabricated( $ctx );
+		is( $got, $expected, 'got expected response' );
+		is( \@log, $expected_log, 'got expected log' ) if defined $expected_log;
+	};
 };
 
 done_testing;
