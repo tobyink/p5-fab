@@ -28,7 +28,7 @@ sub to_string ( $self, @ ) {
 		$msg .= "\tbecause: " . (
 			blessed($self->original_exception) && $self->original_exception->DOES( __PACKAGE__ )
 				? $self->original_exception->to_string
-				: "@{[ $self->original_exception ]}"
+				: "@{[ $self->original_exception ]}\n"
 		);
 	}
 	return $msg;
