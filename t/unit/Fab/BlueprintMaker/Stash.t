@@ -33,6 +33,20 @@ describe 'constructor `new`' => sub {
 	};
 };
 
+describe 'overload `bool`' => sub {
+	
+	tests 'it works' => sub {
+		
+		my $object = $CLASS->new( '$STASH' );
+		
+		is(
+			!!$object,
+			T(),
+			'always true',
+		);
+	};
+};
+
 describe 'overload `@{}`' => sub {
 	
 	tests 'it works' => sub {
