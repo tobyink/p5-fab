@@ -52,5 +52,6 @@ around already_fabricated => sub ( $next, $self, $context ) {
 	return true;
 };
 
+# XXX: postrequisites
 
 1;
