@@ -25,7 +25,7 @@ sub _exporter_validate_opts ( $class, $globals ) {
 		: path(                  $globals->{file} );
 	
 	if ( $file->exists ) {
-		$file->is_file or Fab::Mite::croak( "$file is not a file!" );
+		$file->is_file or Fab::Mite::croak( "$file is not a file" );
 		
 		my @docs = LoadFile( $file );
 		$globals->{CONFIG} = \@docs;

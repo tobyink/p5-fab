@@ -106,6 +106,22 @@ describe 'method `_exporter_validate_opts`' => sub {
 			'modified $globals hash as expected',
 		);
 	};
+	
+	tests 'it fails if given a directory' => sub {
+		
+		my $tmp = 'Path::Tiny'->tempfile();
+		$tmp->spew( TEST_DATA );
+		
+		my $globals = {
+			file => $tmp->parent->stringify,
+		};
+		
+		my $e = dies {
+			$CLASS->_exporter_validate_opts( $globals );
+		};
+		
+		like $e, qr/is not a file/;
+	};
 };
 
 describe 'method `_generateArray_CONFIG`' => sub {
