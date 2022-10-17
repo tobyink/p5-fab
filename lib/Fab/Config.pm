@@ -8,40 +8,38 @@ use Fab::Mite ();
 use YAML::PP qw( LoadFile );
 use parent 'Exporter::Tiny';
 
-our @EXPORT = qw( %CONFIG );
-
-sub _docs_ref ( $class ) {
-	no strict 'refs';
-	no warnings 'once';
-	\@{"$class\::DOCS"};
-}
-
-sub _config_ref ( $class ) {
-	no strict 'refs';
-	no warnings 'once';
-	\%{"$class\::CONFIG"};
-}
+our @EXPORT = qw( %CONFIG @CONFIG );
 
 sub _path_to_config_file ( $class ) {
 	return 'Fab.yml';
 }
 
-sub _load_file ( $class, $path=undef ) {
-	my $file = path( $path // $class->_path_to_config_file );
+sub _exporter_validate_opts ( $class, $globals ) {
+	
+	$globals->{CONFIG} = [ {} ];
+	
+	$globals->{file} //= $class->_path_to_config_file;
+	
+	my $file = ( defined $globals->{dir} )
+		? path( $globals->{dir}, $globals->{file} )
+		: path(                  $globals->{file} );
 	
 	if ( $file->exists ) {
-		$file->is_file or Fab::Mite::croak( 'Fab.yml is not a file!' );
+		$file->is_file or Fab::Mite::croak( "$file is not a file!" );
 		
-		my $docs = $class->_docs_ref;
-		@$docs = LoadFile( $file );
-		
-		my $config = $class->_config_ref;
-		%$config = $docs->[0]->%*;
+		my @docs = LoadFile( $file );
+		$globals->{CONFIG} = \@docs;
 	}
-	
-	return;
 }
 
-__PACKAGE__->_load_file unless $Fab::Config::_NO_AUTOLOAD_FILE;
+sub _generateHash_CONFIG ( $class, $name, $args, $globals ) {
+	
+	return $globals->{CONFIG}[0];
+}
+
+sub _generateArray_CONFIG ( $class, $name, $args, $globals ) {
+	
+	return $globals->{CONFIG};
+}
 
 1;

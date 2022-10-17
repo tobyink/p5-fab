@@ -19,8 +19,6 @@ the same terms as the Perl 5 programming language system itself.
 
 =cut
 
-BEGIN { $Fab::Config::_NO_AUTOLOAD_FILE = 1 };
-
 use Test2::V0 -target => 'Fab::Config';
 use Test2::Tools::Spec;
 use Path::Tiny;
@@ -42,34 +40,9 @@ describe 'package variable `@EXPORT`' => sub {
 			\@Fab::Config::EXPORT,
 			bag {
 				item string '%CONFIG';
+				item string '@CONFIG';
 				end;
 			},
-		);
-	};
-};
-
-describe 'method `_docs_ref`' => sub {
-	
-	tests 'it works' => sub {
-		
-		no warnings 'once';
-		is(
-			$CLASS->_docs_ref,
-			exact_ref( \@Fab::Config::DOCS ),
-			'check the reference address returned',
-		);
-	};
-};
-
-describe 'method `_config_ref`' => sub {
-	
-	tests 'it works' => sub {
-		
-		no warnings 'once';
-		is(
-			$CLASS->_config_ref,
-			exact_ref( \%Fab::Config::CONFIG ),
-			'check the reference address returned',
 		);
 	};
 };
@@ -96,47 +69,67 @@ foo: 123
 bar: 456
 YAML
 
-describe 'method `_load_file`' => sub {
+describe 'method `_exporter_validate_opts`' => sub {
 	
 	tests 'it works' => sub {
 		
-		my ( @docs, %config );
-		my $guard = mock( $CLASS, set => [
-			_docs_ref    => sub { \@docs },
-			_config_ref  => sub { \%config },
-		] );
+		my $tmp = 'Path::Tiny'->tempfile();
+		$tmp->spew( TEST_DATA );
 		
-		my $tempfile = 'Path::Tiny'->tempfile;
-		$tempfile->spew( TEST_DATA );
+		my $globals = {
+			file => $tmp->basename,
+			dir  => $tmp->parent->stringify,
+		};
 		
-		$CLASS->_load_file( $tempfile );
-		
-		is(
-			\@docs,
-			array {
-				item hash {
-					field foo => 666;
-					field bar => 999;
-					end;
-				};
-				item hash {
-					field foo => 123;
-					field bar => 456;
-					end;
-				};
-				end;
-			},
-			'@DOCS',
-		);
+		$CLASS->_exporter_validate_opts( $globals );
 		
 		is(
-			\%config,
+			$globals,
 			hash {
-				field foo => 666;
-				field bar => 999;
+				field file   => D();
+				field dir    => D();
+				field CONFIG => array {
+					item hash {
+						field foo => number 666;
+						field bar => number 999;
+						end;
+					};
+					item hash {
+						field foo => number 123;
+						field bar => number 456;
+						end;
+					};
+					end;
+				};
 				end;
 			},
-			'%CONFIG',
+			'modified $globals hash as expected',
+		);
+	};
+};
+
+describe 'method `_generateArray_CONFIG`' => sub {
+	
+	tests 'it works' => sub {
+		
+		my $globals = { CONFIG => [ {}, {} ] };
+		
+		is(
+			$CLASS->_generateArray_CONFIG( '@CONFIG', {}, $globals ),
+			exact_ref( $globals->{CONFIG} ),
+		);
+	};
+};
+
+describe 'method `_generateHash_CONFIG`' => sub {
+	
+	tests 'it works' => sub {
+		
+		my $globals = { CONFIG => [ {}, {} ] };
+		
+		is(
+			$CLASS->_generateHash_CONFIG( '%CONFIG', {}, $globals ),
+			exact_ref( $globals->{CONFIG}[0] ),
 		);
 	};
 };
